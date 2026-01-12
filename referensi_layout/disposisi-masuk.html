@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disposisi - Kotak Masuk - Sistem Arsip Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .data-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .mini-stat { background: var(--white); padding: 1rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 1rem; }
+        .mini-stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+        .mini-stat-icon.pending { background: #fef3c7; color: #d97706; }
+        .mini-stat-icon.urgent { background: #fee2e2; color: #dc2626; }
+        .mini-stat-icon.processed { background: #dcfce7; color: #15803d; }
+        .mini-stat-info h4 { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin-bottom: 0.25rem; }
+        .mini-stat-info p { font-size: 0.85rem; color: var(--muted-text); }
+        .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: var(--light-bg); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .toolbar-left { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .filter-tabs { display: flex; gap: 0.5rem; }
+        .filter-tab { padding: 0.5rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--white); cursor: pointer; font-size: 0.9rem; transition: var(--transition); }
+        .filter-tab.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .table-search { position: relative; }
+        .table-search input { padding: 0.5rem 1rem 0.5rem 2.25rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); min-width: 200px; }
+        .table-search i { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--muted-text); font-size: 0.85rem; }
+        .disposisi-card { background: var(--white); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow-sm); transition: var(--transition); border-left: 4px solid transparent; }
+        .disposisi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .disposisi-card.unread { border-left-color: var(--primary-color); background: rgba(59, 130, 246, 0.02); }
+        .disposisi-card.urgent { border-left-color: var(--danger-color); }
+        .disposisi-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; gap: 1rem; }
+        .disposisi-title { flex: 1; }
+        .disposisi-title h3 { font-size: 1rem; font-weight: 600; color: var(--dark-text); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; }
+        .disposisi-title .new-badge { background: var(--primary-color); color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 1rem; }
+        .disposisi-meta { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: var(--muted-text); margin-bottom: 0.75rem; }
+        .disposisi-meta span { display: flex; align-items: center; gap: 0.35rem; }
+        .disposisi-instruction { background: var(--light-bg); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem; border-left: 3px solid var(--primary-color); }
+        .disposisi-instruction-label { font-size: 0.8rem; color: var(--muted-text); margin-bottom: 0.35rem; font-weight: 500; text-transform: uppercase; }
+        .disposisi-instruction-text { color: var(--dark-text); line-height: 1.5; }
+        .disposisi-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; }
+        .priority-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 600; }
+        .priority-badge.high { background: #fee2e2; color: #dc2626; }
+        .priority-badge.medium { background: #fef3c7; color: #d97706; }
+        .priority-badge.low { background: #dbeafe; color: #2563eb; }
+        .submenu { display: block; }
+        .empty-state { text-align: center; padding: 3rem 1rem; }
+        .empty-state i { font-size: 4rem; color: var(--border-color); margin-bottom: 1rem; }
+        .empty-state h3 { font-size: 1.25rem; font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem; }
+        .empty-state p { color: var(--muted-text); }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>SI-ARSIP KELEKAR</span>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="menu-category">Menu Utama</div>
+                <a href="dashboard.html" class="menu-item"><div class="menu-icon"><i class="fa-solid fa-gauge-high"></i></div><span>Dashboard</span></a>
+                <a href="upload-arsip.html" class="menu-item"><div class="menu-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><span>Upload Arsip</span></a>
+                <a href="pencarian-arsip.html" class="menu-item"><div class="menu-icon"><i class="fa-solid fa-magnifying-glass"></i></div><span>Pencarian Arsip</span></a>
+                <div class="menu-item"><div class="menu-icon"><i class="fa-solid fa-box-archive"></i></div><span>Data Arsip</span><i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i></div>
+                <div class="submenu">
+                    <a href="data-surat-masuk.html" class="submenu-item">Surat Masuk</a>
+                    <a href="data-surat-keluar.html" class="submenu-item">Surat Keluar</a>
+                    <a href="data-sk-lainnya.html" class="submenu-item">SK / Lainnya</a>
+                </div>
+                <div class="menu-category">Administrasi</div>
+                <div class="menu-item active"><div class="menu-icon"><i class="fa-solid fa-share-from-square"></i></div><span>Disposisi</span><i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i></div>
+                <div class="submenu">
+                    <a href="disposisi-masuk.html" class="submenu-item" style="color: var(--white); font-weight: 500;">Kotak Masuk</a>
+                    <a href="disposisi-riwayat.html" class="submenu-item">Riwayat</a>
+                </div>
+                <div class="menu-item"><div class="menu-icon"><i class="fa-solid fa-gear"></i></div><span>Pengaturan</span></div>
+                <a href="login.html" class="menu-item" style="margin-top: 2rem; color: #ef4444;"><div class="menu-icon"><i class="fa-solid fa-right-from-bracket"></i></div><span>Logout</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-bar"><i class="fa-solid fa-magnifying-glass search-icon"></i><input type="text" class="search-input" placeholder="Cari disposisi..."></div>
+                <div class="top-actions">
+                    <button class="action-btn"><i class="fa-regular fa-bell"></i><span class="notification-badge"></span></button>
+                    <div class="user-profile"><div class="avatar"><i class="fa-solid fa-user"></i></div></div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="data-header">
+                    <div>
+                        <h2 class="page-title">Kotak Masuk Disposisi</h2>
+                        <p class="text-muted">Disposisi surat yang perlu ditindaklanjuti</p>
+                    </div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="mini-stat">
+                        <div class="mini-stat-icon pending"><i class="fa-solid fa-clock"></i></div>
+                        <div class="mini-stat-info">
+                            <h4>8</h4>
+                            <p>Belum Dibaca</p>
+                        </div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-icon urgent"><i class="fa-solid fa-exclamation-triangle"></i></div>
+                        <div class="mini-stat-info">
+                            <h4>3</h4>
+                            <p>Prioritas Tinggi</p>
+                        </div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-icon processed"><i class="fa-solid fa-check-circle"></i></div>
+                        <div class="mini-stat-info">
+                            <h4>12</h4>
+                            <p>Selesai Hari Ini</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="filter-tabs">
+                                <button class="filter-tab active">Semua</button>
+                                <button class="filter-tab">Belum Dibaca</button>
+                                <button class="filter-tab">Prioritas Tinggi</button>
+                            </div>
+                        </div>
+                        <div class="table-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari disposisi..."></div>
+                    </div>
+
+                    <div class="p-6">
+                        <!-- Disposisi Card 1 - Unread & Urgent -->
+                        <div class="disposisi-card unread urgent">
+                            <div class="disposisi-header">
+                                <div class="disposisi-title">
+                                    <h3>
+                                        Undangan Rapat Koordinasi Pembangunan 2025
+                                        <span class="new-badge">BARU</span>
+                                    </h3>
+                                    <div class="disposisi-meta">
+                                        <span><i class="fa-solid fa-user"></i> Dari: Camat Kelekar</span>
+                                        <span><i class="fa-solid fa-calendar"></i> 16 Nov 2025, 14:30</span>
+                                        <span><i class="fa-solid fa-file"></i> 005/123/KC/2025</span>
+                                    </div>
+                                </div>
+                                <span class="priority-badge high"><i class="fa-solid fa-circle-exclamation"></i> Urgent</span>
+                            </div>
+                            <div class="disposisi-instruction">
+                                <div class="disposisi-instruction-label">Instruksi Disposisi:</div>
+                                <div class="disposisi-instruction-text">
+                                    Mohon segera ditindaklanjuti dan hadiri rapat koordinasi pada tanggal 18 November 2025 pukul 09.00 WIB. Bawa data APBDes dan rencana pembangunan tahun depan.
+                                </div>
+                            </div>
+                            <div class="disposisi-actions">
+                                <button class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Tandai Selesai</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> Lihat Dokumen</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-reply"></i> Teruskan</button>
+                            </div>
+                        </div>
+
+                        <!-- Disposisi Card 2 - Unread -->
+                        <div class="disposisi-card unread">
+                            <div class="disposisi-header">
+                                <div class="disposisi-title">
+                                    <h3>
+                                        Permohonan KTP Warga
+                                        <span class="new-badge">BARU</span>
+                                    </h3>
+                                    <div class="disposisi-meta">
+                                        <span><i class="fa-solid fa-user"></i> Dari: Kasubbag Umum</span>
+                                        <span><i class="fa-solid fa-calendar"></i> 16 Nov 2025, 10:15</span>
+                                        <span><i class="fa-solid fa-file"></i> 470/045/KC/2025</span>
+                                    </div>
+                                </div>
+                                <span class="priority-badge medium"><i class="fa-solid fa-circle"></i> Sedang</span>
+                            </div>
+                            <div class="disposisi-instruction">
+                                <div class="disposisi-instruction-label">Instruksi Disposisi:</div>
+                                <div class="disposisi-instruction-text">
+                                    Mohon diproses permohonan KTP atas nama Bpk. Ahmad Sudirman. Pastikan dokumen persyaratan lengkap sebelum diteruskan ke Disdukcapil.
+                                </div>
+                            </div>
+                            <div class="disposisi-actions">
+                                <button class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Tandai Selesai</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> Lihat Dokumen</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-reply"></i> Teruskan</button>
+                            </div>
+                        </div>
+
+                        <!-- Disposisi Card 3 - Read -->
+                        <div class="disposisi-card">
+                            <div class="disposisi-header">
+                                <div class="disposisi-title">
+                                    <h3>Laporan Keuangan Triwulan III 2025</h3>
+                                    <div class="disposisi-meta">
+                                        <span><i class="fa-solid fa-user"></i> Dari: Kasubbag Keuangan</span>
+                                        <span><i class="fa-solid fa-calendar"></i> 15 Nov 2025, 16:20</span>
+                                        <span><i class="fa-solid fa-file"></i> 900/089/KC/2025</span>
+                                    </div>
+                                </div>
+                                <span class="priority-badge low"><i class="fa-solid fa-circle"></i> Rendah</span>
+                            </div>
+                            <div class="disposisi-instruction">
+                                <div class="disposisi-instruction-label">Instruksi Disposisi:</div>
+                                <div class="disposisi-instruction-text">
+                                    Mohon review laporan keuangan dan berikan feedback jika ada yang perlu diperbaiki sebelum dikirim ke Bupati.
+                                </div>
+                            </div>
+                            <div class="disposisi-actions">
+                                <button class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Tandai Selesai</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> Lihat Dokumen</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-reply"></i> Teruskan</button>
+                            </div>
+                        </div>
+
+                        <!-- Disposisi Card 4 - Urgent -->
+                        <div class="disposisi-card urgent">
+                            <div class="disposisi-header">
+                                <div class="disposisi-title">
+                                    <h3>Surat Pengantar Nikah - Segera</h3>
+                                    <div class="disposisi-meta">
+                                        <span><i class="fa-solid fa-user"></i> Dari: Staf Pelayanan</span>
+                                        <span><i class="fa-solid fa-calendar"></i> 15 Nov 2025, 14:00</span>
+                                        <span><i class="fa-solid fa-file"></i> 474/021/KC/2025</span>
+                                    </div>
+                                </div>
+                                <span class="priority-badge high"><i class="fa-solid fa-circle-exclamation"></i> Urgent</span>
+                            </div>
+                            <div class="disposisi-instruction">
+                                <div class="disposisi-instruction-label">Instruksi Disposisi:</div>
+                                <div class="disposisi-instruction-text">
+                                    Mohon segera ditandatangani karena pemohon membutuhkan hari ini untuk persyaratan nikah besok. Sudah diverifikasi dan lengkap.
+                                </div>
+                            </div>
+                            <div class="disposisi-actions">
+                                <button class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Tandai Selesai</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-eye"></i> Lihat Dokumen</button>
+                                <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-reply"></i> Teruskan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

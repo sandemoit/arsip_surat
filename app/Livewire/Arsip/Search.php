@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Livewire\Arsip;
+
+use Livewire\Component;
+
+class Search extends Component
+{
+    public function render()
+    {
+        return view('livewire.arsip.search')
+            ->layout('components.layouts.app.sidebar');
+    }
+}

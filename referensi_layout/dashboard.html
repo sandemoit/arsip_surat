@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistem Arsip Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>SI-ARSIP KELEKAR</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <div class="menu-category">Menu Utama</div>
+                
+                <a href="#" class="menu-item active">
+                    <div class="menu-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="upload-arsip.html" class="menu-item">
+                    <div class="menu-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <span>Upload Arsip</span>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <div class="menu-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <span>Pencarian Arsip</span>
+                </a>
+
+                <div class="menu-item menu-item-has-submenu">
+                    <div class="menu-icon"><i class="fa-solid fa-box-archive"></i></div>
+                    <span>Data Arsip</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <div class="submenu">
+                    <a href="#" class="submenu-item">Surat Masuk</a>
+                    <a href="#" class="submenu-item">Surat Keluar</a>
+                    <a href="#" class="submenu-item">SK / Lainnya</a>
+                </div>
+
+                <div class="menu-category">Administrasi</div>
+
+                <div class="menu-item menu-item-has-submenu">
+                    <div class="menu-icon"><i class="fa-solid fa-share-from-square"></i></div>
+                    <span>Disposisi</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <div class="submenu">
+                    <a href="#" class="submenu-item">Kotak Masuk</a>
+                    <a href="#" class="submenu-item">Riwayat</a>
+                </div>
+
+                <div class="menu-item menu-item-has-submenu">
+                    <div class="menu-icon"><i class="fa-solid fa-gear"></i></div>
+                    <span>Pengaturan</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <div class="submenu">
+                    <a href="#" class="submenu-item">Data Pengguna</a>
+                    <a href="#" class="submenu-item">Kategori Arsip</a>
+                </div>
+
+                <a href="login.html" class="menu-item" style="margin-top: 2rem; color: #ef4444;">
+                    <div class="menu-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Cari arsip, surat, atau dokumen...">
+                </div>
+
+                <div class="top-actions">
+                    <button class="action-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge"></span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <div class="text-right" style="margin-right: 0.5rem; display: none; @media(min-width: 768px){display: block;}">
+                            <div style="font-size: 0.9rem; font-weight: 600;">Admin Petugas</div>
+                            <div style="font-size: 0.75rem; color: var(--muted-text);">NIP. 19850101...</div>
+                        </div>
+                        <div class="avatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h2 class="page-title">Ringkasan Arsip</h2>
+                    <p class="text-muted">Overview data arsip Kecamatan Kelekar hari ini.</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>1,250</h3>
+                            <p>Total Arsip</p>
+                        </div>
+                        <div class="stat-icon bg-blue-light">
+                            <i class="fa-solid fa-folder"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>15</h3>
+                            <p>Arsip Hari Ini</p>
+                        </div>
+                        <div class="stat-icon bg-green-light">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h3>3</h3>
+                            <p>Pending</p>
+                        </div>
+                        <div class="stat-icon bg-orange-light">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Recent Activity Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Aktivitas Terbaru</h3>
+                            <button class="btn-link text-sm">Lihat Semua</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Judul Surat</th>
+                                        <th>Jenis</th>
+                                        <th>Waktu</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 500;">Undangan Rapat Koordinasi</div>
+                                            <div class="text-xs text-muted">No. 005/123/KC/2025</div>
+                                        </td>
+                                        <td><span class="badge badge-primary">Umum</span></td>
+                                        <td>10:05</td>
+                                        <td><i class="fa-solid fa-check text-success" style="color: var(--success-color);"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 500;">Permohonan KTP Warga</div>
+                                            <div class="text-xs text-muted">Dari: Bpk. Ahmad</div>
+                                        </td>
+                                        <td><span class="badge badge-warning">Penduduk</span></td>
+                                        <td>09:15</td>
+                                        <td><i class="fa-solid fa-clock" style="color: var(--warning-color);"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 500;">Laporan Keuangan Bulanan</div>
+                                            <div class="text-xs text-muted">Periode Januari 2025</div>
+                                        </td>
+                                        <td><span class="badge badge-success">Keuangan</span></td>
+                                        <td>08:30</td>
+                                        <td><i class="fa-solid fa-check" style="color: var(--success-color);"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 500;">Surat Pengantar Nikah</div>
+                                            <div class="text-xs text-muted">Dari: Ibu Siti</div>
+                                        </td>
+                                        <td><span class="badge badge-primary">Umum</span></td>
+                                        <td>Yesterday</td>
+                                        <td><i class="fa-solid fa-check" style="color: var(--success-color);"></i></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Chart Mockup -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Grafik Arsip Bulanan</h3>
+                        </div>
+                        <div class="card-body p-6">
+                            <div class="chart-container">
+                                <div class="chart-bar" style="height: 40%;" title="Jan"></div>
+                                <div class="chart-bar" style="height: 65%;" title="Feb"></div>
+                                <div class="chart-bar" style="height: 50%;" title="Mar"></div>
+                                <div class="chart-bar" style="height: 80%;" title="Apr"></div>
+                                <div class="chart-bar" style="height: 60%;" title="May"></div>
+                                <div class="chart-bar" style="height: 90%;" title="Jun"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-muted mt-4">
+                                <span>Jan</span>
+                                <span>Feb</span>
+                                <span>Mar</span>
+                                <span>Apr</span>
+                                <span>May</span>
+                                <span>Jun</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

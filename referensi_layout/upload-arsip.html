@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Arsip - Sistem Arsip Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Upload Page Specific Styles */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            text-align: center;
+            background-color: #fafbfc;
+            transition: var(--transition);
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.03);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.08);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .upload-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtitle {
+            color: var(--muted-text);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .upload-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .file-types {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--muted-text);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .select-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background-color: var(--white);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+
+        .select-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .textarea-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background-color: var(--white);
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .textarea-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--dark-text);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--light-bg);
+        }
+
+        .file-preview {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background-color: var(--light-bg);
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+        }
+
+        .file-preview.show {
+            display: flex;
+        }
+
+        .file-preview-icon {
+            width: 48px;
+            height: 48px;
+            background-color: #fee2e2;
+            color: #ef4444;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .file-preview-icon.pdf { background-color: #fee2e2; color: #ef4444; }
+        .file-preview-icon.doc { background-color: #dbeafe; color: #2563eb; }
+        .file-preview-icon.img { background-color: #dcfce7; color: #10b981; }
+
+        .file-preview-info {
+            flex: 1;
+        }
+
+        .file-preview-name {
+            font-weight: 500;
+            color: var(--dark-text);
+            margin-bottom: 0.25rem;
+        }
+
+        .file-preview-size {
+            font-size: 0.8rem;
+            color: var(--muted-text);
+        }
+
+        .file-preview-remove {
+            background: none;
+            border: none;
+            color: var(--muted-text);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .file-preview-remove:hover {
+            color: var(--danger-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>SI-ARSIP KELEKAR</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <div class="menu-category">Menu Utama</div>
+                
+                <a href="dashboard.html" class="menu-item">
+                    <div class="menu-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="upload-arsip.html" class="menu-item active">
+                    <div class="menu-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <span>Upload Arsip</span>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <div class="menu-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <span>Pencarian Arsip</span>
+                </a>
+
+                <div class="menu-item menu-item-has-submenu">
+                    <div class="menu-icon"><i class="fa-solid fa-box-archive"></i></div>
+                    <span>Data Arsip</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <div class="submenu">
+                    <a href="#" class="submenu-item">Surat Masuk</a>
+                    <a href="#" class="submenu-item">Surat Keluar</a>
+                    <a href="#" class="submenu-item">SK / Lainnya</a>
+                </div>
+
+                <div class="menu-category">Administrasi</div>
+
+                <div class="menu-item menu-item-has-submenu">
+                    <div class="menu-icon"><i class="fa-solid fa-share-from-square"></i></div>
+                    <span>Disposisi</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <div class="submenu">
+                    <a href="#" class="submenu-item">Kotak Masuk</a>
+                    <a href="#" class="submenu-item">Riwayat</a>
+                </div>
+
+                <div class="menu-item menu-item-has-submenu">
+                    <div class="menu-icon"><i class="fa-solid fa-gear"></i></div>
+                    <span>Pengaturan</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <div class="submenu">
+                    <a href="#" class="submenu-item">Data Pengguna</a>
+                    <a href="#" class="submenu-item">Kategori Arsip</a>
+                </div>
+
+                <a href="login.html" class="menu-item" style="margin-top: 2rem; color: #ef4444;">
+                    <div class="menu-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Cari arsip, surat, atau dokumen...">
+                </div>
+
+                <div class="top-actions">
+                    <button class="action-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge"></span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <div class="avatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h2 class="page-title">Upload Arsip Baru</h2>
+                    <p class="text-muted">Unggah dokumen arsip ke dalam sistem.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Form Upload Arsip</h3>
+                    </div>
+                    <div class="p-6">
+                        <form>
+                            <!-- Upload Zone -->
+                            <div class="upload-zone" id="uploadZone">
+                                <div class="upload-icon">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <div class="upload-title">Drag & Drop file di sini</div>
+                                <div class="upload-subtitle">atau klik untuk memilih file</div>
+                                <div class="upload-btn">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                    Pilih File
+                                </div>
+                                <div class="file-types">Format yang didukung: PDF, DOC, DOCX, JPG, PNG (Maks. 10MB)</div>
+                                <input type="file" id="fileInput" style="display: none;" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+
+                            <!-- File Preview -->
+                            <div class="file-preview" id="filePreview">
+                                <div class="file-preview-icon pdf" id="fileIcon">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </div>
+                                <div class="file-preview-info">
+                                    <div class="file-preview-name" id="fileName">Document.pdf</div>
+                                    <div class="file-preview-size" id="fileSize">2.4 MB</div>
+                                </div>
+                                <button type="button" class="file-preview-remove" id="removeFile">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+
+                            <!-- Form Fields -->
+                            <div class="form-section">
+                                <h4 class="form-section-title">Informasi Arsip</h4>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="nomorSurat">Nomor Surat / Dokumen *</label>
+                                        <input type="text" id="nomorSurat" class="form-control" placeholder="Contoh: 005/123/KC/2025" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="tanggalSurat">Tanggal Surat *</label>
+                                        <input type="date" id="tanggalSurat" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="judulSurat">Judul / Perihal Surat *</label>
+                                    <input type="text" id="judulSurat" class="form-control" placeholder="Masukkan judul atau perihal surat" required>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="jenisSurat">Jenis Surat *</label>
+                                        <select id="jenisSurat" class="select-control" required>
+                                            <option value="">-- Pilih Jenis Surat --</option>
+                                            <option value="masuk">Surat Masuk</option>
+                                            <option value="keluar">Surat Keluar</option>
+                                            <option value="sk">SK / Keputusan</option>
+                                            <option value="lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="kategori">Kategori *</label>
+                                        <select id="kategori" class="select-control" required>
+                                            <option value="">-- Pilih Kategori --</option>
+                                            <option value="umum">Umum</option>
+                                            <option value="penduduk">Kependudukan</option>
+                                            <option value="keuangan">Keuangan</option>
+                                            <option value="kepegawaian">Kepegawaian</option>
+                                            <option value="pembangunan">Pembangunan</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="pengirim">Pengirim / Asal Surat</label>
+                                        <input type="text" id="pengirim" class="form-control" placeholder="Nama instansi atau perorangan">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="penerima">Tujuan / Penerima</label>
+                                        <input type="text" id="penerima" class="form-control" placeholder="Nama penerima surat">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="keterangan">Keterangan Tambahan</label>
+                                    <textarea id="keterangan" class="textarea-control" placeholder="Tambahkan catatan atau keterangan jika diperlukan..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary">
+                                    <i class="fa-solid fa-xmark"></i> Batal
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Arsip
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple JS for upload zone interaction (optional enhancement)
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const removeFile = document.getElementById('removeFile');
+
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) handleFile(files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) handleFile(e.target.files[0]);
+        });
+
+        function handleFile(file) {
+            fileName.textContent = file.name;
+            fileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+            filePreview.classList.add('show');
+            uploadZone.style.display = 'none';
+        }
+
+        removeFile.addEventListener('click', () => {
+            filePreview.classList.remove('show');
+            uploadZone.style.display = 'block';
+            fileInput.value = '';
+        });
+    </script>
+</body>
+</html>

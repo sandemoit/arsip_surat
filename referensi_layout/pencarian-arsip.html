@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencarian Arsip - Sistem Arsip Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Search Page Specific Styles */
+        .search-hero {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .search-hero-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-hero-subtitle {
+            opacity: 0.85;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box-large {
+            display: flex;
+            gap: 0.75rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .search-box-large input {
+            flex: 1;
+            border: none;
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+            outline: none;
+            border-radius: var(--radius-md);
+            background: transparent;
+        }
+
+        .search-box-large .btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+
+        .filter-section {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-toggle {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--muted-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            background: var(--white);
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .results-count {
+            font-size: 0.95rem;
+            color: var(--muted-text);
+        }
+
+        .results-count strong {
+            color: var(--dark-text);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.25rem;
+            background: var(--light-bg);
+            padding: 0.25rem;
+            border-radius: var(--radius-md);
+        }
+
+        .view-toggle button {
+            background: none;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            color: var(--muted-text);
+            transition: var(--transition);
+        }
+
+        .view-toggle button.active {
+            background: var(--white);
+            color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Result Cards */
+        .results-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .result-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            gap: 1rem;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .result-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .result-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .result-icon.pdf { background: #fee2e2; color: #ef4444; }
+        .result-icon.doc { background: #dbeafe; color: #2563eb; }
+        .result-icon.img { background: #dcfce7; color: #10b981; }
+
+        .result-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-title a {
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        .result-title a:hover {
+            color: var(--primary-color);
+        }
+
+        .result-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--muted-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .result-excerpt {
+            font-size: 0.9rem;
+            color: var(--muted-text);
+            line-height: 1.5;
+        }
+
+        .result-excerpt mark {
+            background: #fef08a;
+            color: inherit;
+            padding: 0 0.15rem;
+            border-radius: 2px;
+        }
+
+        .result-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .result-actions .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light-bg);
+            color: var(--muted-text);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .result-actions .btn-icon:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination button {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--dark-text);
+        }
+
+        .pagination button:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .pagination button.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            color: var(--muted-text);
+        }
+
+        @media (max-width: 768px) {
+            .result-card {
+                flex-direction: column;
+            }
+            .result-actions {
+                flex-direction: row;
+            }
+            .search-box-large {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>SI-ARSIP KELEKAR</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <div class="menu-category">Menu Utama</div>
+                
+                <a href="dashboard.html" class="menu-item">
+                    <div class="menu-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="upload-arsip.html" class="menu-item">
+                    <div class="menu-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <span>Upload Arsip</span>
+                </a>
+
+                <a href="pencarian-arsip.html" class="menu-item active">
+                    <div class="menu-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <span>Pencarian Arsip</span>
+                </a>
+
+                <div class="menu-item menu-item-has-submenu">
+                    <div class="menu-icon"><i class="fa-solid fa-box-archive"></i></div>
+                    <span>Data Arsip</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <div class="submenu">
+                    <a href="#" class="submenu-item">Surat Masuk</a>
+                    <a href="#" class="submenu-item">Surat Keluar</a>
+                    <a href="#" class="submenu-item">SK / Lainnya</a>
+                </div>
+
+                <div class="menu-category">Administrasi</div>
+
+                <div class="menu-item menu-item-has-submenu">
+                    <div class="menu-icon"><i class="fa-solid fa-share-from-square"></i></div>
+                    <span>Disposisi</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <div class="submenu">
+                    <a href="#" class="submenu-item">Kotak Masuk</a>
+                    <a href="#" class="submenu-item">Riwayat</a>
+                </div>
+
+                <div class="menu-item menu-item-has-submenu">
+                    <div class="menu-icon"><i class="fa-solid fa-gear"></i></div>
+                    <span>Pengaturan</span>
+                    <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <div class="submenu">
+                    <a href="#" class="submenu-item">Data Pengguna</a>
+                    <a href="#" class="submenu-item">Kategori Arsip</a>
+                </div>
+
+                <a href="login.html" class="menu-item" style="margin-top: 2rem; color: #ef4444;">
+                    <div class="menu-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Cari arsip, surat, atau dokumen...">
+                </div>
+
+                <div class="top-actions">
+                    <button class="action-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge"></span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <div class="avatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content-wrapper">
+                <!-- Search Hero -->
+                <div class="search-hero">
+                    <h1 class="search-hero-title">Pencarian Arsip</h1>
+                    <p class="search-hero-subtitle">Telusuri metadata dan isi dokumen arsip secara cepat</p>
+                    <div class="search-box-large">
+                        <input type="text" placeholder="Ketik nomor surat, judul, atau kata kunci..." id="mainSearchInput">
+                        <button class="btn btn-primary">
+                            <i class="fa-solid fa-magnifying-glass"></i> Cari
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <div class="filter-header">
+                        <div class="filter-title">
+                            <i class="fa-solid fa-filter"></i> Filter Pencarian
+                        </div>
+                        <button class="filter-toggle" id="toggleFilter">
+                            <span>Sembunyikan</span>
+                            <i class="fa-solid fa-chevron-up"></i>
+                        </button>
+                    </div>
+                    <div class="filter-grid" id="filterGrid">
+                        <div class="filter-group">
+                            <label>Jenis Surat</label>
+                            <select>
+                                <option value="">Semua Jenis</option>
+                                <option value="masuk">Surat Masuk</option>
+                                <option value="keluar">Surat Keluar</option>
+                                <option value="sk">SK / Keputusan</option>
+                                <option value="lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Kategori</label>
+                            <select>
+                                <option value="">Semua Kategori</option>
+                                <option value="umum">Umum</option>
+                                <option value="penduduk">Kependudukan</option>
+                                <option value="keuangan">Keuangan</option>
+                                <option value="kepegawaian">Kepegawaian</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Dari Tanggal</label>
+                            <input type="date">
+                        </div>
+                        <div class="filter-group">
+                            <label>Sampai Tanggal</label>
+                            <input type="date">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="results-header">
+                    <div class="results-count">
+                        Menampilkan <strong>24</strong> dari <strong>156</strong> arsip
+                    </div>
+                    <div class="view-toggle">
+                        <button class="active" title="List View"><i class="fa-solid fa-list"></i></button>
+                        <button title="Grid View"><i class="fa-solid fa-grip"></i></button>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <!-- Result Card 1 -->
+                    <div class="result-card">
+                        <div class="result-icon pdf">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                        <div class="result-content">
+                            <div class="result-title">
+                                <a href="#">Undangan Rapat Koordinasi Pembangunan 2025</a>
+                                <span class="badge badge-primary">Umum</span>
+                            </div>
+                            <div class="result-meta">
+                                <span><i class="fa-regular fa-file"></i> 005/123/KC/2025</span>
+                                <span><i class="fa-regular fa-calendar"></i> 15 Nov 2025</span>
+                                <span><i class="fa-regular fa-user"></i> Dinas PUPR</span>
+                            </div>
+                            <div class="result-excerpt">
+                                Mengundang Bapak/Ibu untuk menghadiri <mark>rapat koordinasi</mark> pembangunan infrastruktur desa tahun anggaran 2025...
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn-icon" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                            <button class="btn-icon" title="Download"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn-icon" title="Disposisi"><i class="fa-solid fa-share"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Result Card 2 -->
+                    <div class="result-card">
+                        <div class="result-icon doc">
+                            <i class="fa-solid fa-file-word"></i>
+                        </div>
+                        <div class="result-content">
+                            <div class="result-title">
+                                <a href="#">Permohonan Surat Keterangan Domisili</a>
+                                <span class="badge badge-warning">Penduduk</span>
+                            </div>
+                            <div class="result-meta">
+                                <span><i class="fa-regular fa-file"></i> 470/045/KC/2025</span>
+                                <span><i class="fa-regular fa-calendar"></i> 14 Nov 2025</span>
+                                <span><i class="fa-regular fa-user"></i> Bpk. Ahmad Sudirman</span>
+                            </div>
+                            <div class="result-excerpt">
+                                Yang bertanda tangan di bawah ini menerangkan bahwa: NIK <mark>1234567890123456</mark>, bertempat tinggal di Desa Kelekar...
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn-icon" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                            <button class="btn-icon" title="Download"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn-icon" title="Disposisi"><i class="fa-solid fa-share"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Result Card 3 -->
+                    <div class="result-card">
+                        <div class="result-icon pdf">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                        <div class="result-content">
+                            <div class="result-title">
+                                <a href="#">Laporan Keuangan Triwulan III 2025</a>
+                                <span class="badge badge-success">Keuangan</span>
+                            </div>
+                            <div class="result-meta">
+                                <span><i class="fa-regular fa-file"></i> 900/089/KC/2025</span>
+                                <span><i class="fa-regular fa-calendar"></i> 10 Nov 2025</span>
+                                <span><i class="fa-regular fa-user"></i> Kasubbag Keuangan</span>
+                            </div>
+                            <div class="result-excerpt">
+                                <mark>Laporan</mark> realisasi anggaran periode Juli - September 2025. Total penyerapan anggaran mencapai 78.5%...
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn-icon" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                            <button class="btn-icon" title="Download"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn-icon" title="Disposisi"><i class="fa-solid fa-share"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Result Card 4 -->
+                    <div class="result-card">
+                        <div class="result-icon img">
+                            <i class="fa-solid fa-file-image"></i>
+                        </div>
+                        <div class="result-content">
+                            <div class="result-title">
+                                <a href="#">SK Pengangkatan Perangkat Desa</a>
+                                <span class="badge badge-primary">Kepegawaian</span>
+                            </div>
+                            <div class="result-meta">
+                                <span><i class="fa-regular fa-file"></i> 800/012/KC/2025</span>
+                                <span><i class="fa-regular fa-calendar"></i> 05 Nov 2025</span>
+                                <span><i class="fa-regular fa-user"></i> Camat Kelekar</span>
+                            </div>
+                            <div class="result-excerpt">
+                                Surat Keputusan tentang <mark>pengangkatan</mark> Sdr. Budi Santoso sebagai Kepala Seksi Pemerintahan Desa...
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn-icon" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                            <button class="btn-icon" title="Download"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn-icon" title="Disposisi"><i class="fa-solid fa-share"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <button disabled><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="active">1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button>4</button>
+                    <button>5</button>
+                    <button><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle Filter
+        const toggleBtn = document.getElementById('toggleFilter');
+        const filterGrid = document.getElementById('filterGrid');
+        
+        toggleBtn.addEventListener('click', () => {
+            const isHidden = filterGrid.style.display === 'none';
+            filterGrid.style.display = isHidden ? 'grid' : 'none';
+            toggleBtn.innerHTML = isHidden 
+                ? '<span>Sembunyikan</span><i class="fa-solid fa-chevron-up"></i>'
+                : '<span>Tampilkan</span><i class="fa-solid fa-chevron-down"></i>';
+        });
+
+        // View Toggle
+        const viewBtns = document.querySelectorAll('.view-toggle button');
+        viewBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                viewBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

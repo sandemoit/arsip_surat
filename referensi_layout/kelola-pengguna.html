@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Data Pengguna - Sistem Arsip Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .data-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .data-actions { display: flex; gap: 0.75rem; }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-success:hover { background-color: #059669; }
+        .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: var(--light-bg); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .toolbar-left { display: flex; align-items: center; gap: 1rem; }
+        .toolbar-right { display: flex; align-items: center; gap: 0.75rem; }
+        .entries-select { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--muted-text); }
+        .entries-select select { padding: 0.4rem 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--white); }
+        .table-search { position: relative; }
+        .table-search input { padding: 0.5rem 1rem 0.5rem 2.25rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); min-width: 200px; }
+        .table-search i { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--muted-text); font-size: 0.85rem; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { background: var(--light-bg); padding: 1rem 1.5rem; text-align: left; font-weight: 600; font-size: 0.85rem; color: var(--muted-text); text-transform: uppercase; letter-spacing: 0.03em; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+        .data-table th.sortable { cursor: pointer; user-select: none; }
+        .data-table th.sortable:hover { color: var(--primary-color); }
+        .data-table th .sort-icon { margin-left: 0.5rem; opacity: 0.4; }
+        .data-table th.sorted .sort-icon { opacity: 1; color: var(--primary-color); }
+        .data-table td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .data-table tr:hover { background: rgba(59, 130, 246, 0.02); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.9rem; }
+        .user-details .user-name { font-weight: 500; color: var(--dark-text); margin-bottom: 0.15rem; }
+        .user-details .user-email { font-size: 0.8rem; color: var(--muted-text); }
+        .role-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 600; }
+        .role-badge.admin { background: #fee2e2; color: #dc2626; }
+        .role-badge.staff { background: #dbeafe; color: #2563eb; }
+        .status-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 600; }
+        .status-badge.active { background: #dcfce7; color: #15803d; }
+        .status-badge.inactive { background: #f3f4f6; color: #6b7280; }
+        .action-buttons { display: flex; gap: 0.5rem; }
+        .action-btn-sm { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); font-size: 0.85rem; }
+        .action-btn-sm.edit { background: #fef3c7; color: #b45309; }
+        .action-btn-sm.edit:hover { background: #f59e0b; color: white; }
+        .action-btn-sm.delete { background: #fee2e2; color: #dc2626; }
+        .action-btn-sm.delete:hover { background: #ef4444; color: white; }
+        .action-btn-sm.reset { background: #e0e7ff; color: #4f46e5; }
+        .action-btn-sm.reset:hover { background: #6366f1; color: white; }
+        .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: var(--light-bg); border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .table-info { font-size: 0.9rem; color: var(--muted-text); }
+        .table-pagination { display: flex; gap: 0.25rem; }
+        .table-pagination button { min-width: 36px; height: 36px; padding: 0 0.5rem; border: 1px solid var(--border-color); background: var(--white); border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: var(--transition); }
+        .table-pagination button:hover:not(:disabled) { border-color: var(--primary-color); color: var(--primary-color); }
+        .table-pagination button.active { background: var(--primary-color); border-color: var(--primary-color); color: white; }
+        .table-pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .submenu { display: block; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>SI-ARSIP KELEKAR</span>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="menu-category">Menu Utama</div>
+                <a href="dashboard.html" class="menu-item"><div class="menu-icon"><i class="fa-solid fa-gauge-high"></i></div><span>Dashboard</span></a>
+                <a href="upload-arsip.html" class="menu-item"><div class="menu-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><span>Upload Arsip</span></a>
+                <a href="pencarian-arsip.html" class="menu-item"><div class="menu-icon"><i class="fa-solid fa-magnifying-glass"></i></div><span>Pencarian Arsip</span></a>
+                <div class="menu-item"><div class="menu-icon"><i class="fa-solid fa-box-archive"></i></div><span>Data Arsip</span><i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i></div>
+                <div class="submenu">
+                    <a href="data-surat-masuk.html" class="submenu-item">Surat Masuk</a>
+                    <a href="data-surat-keluar.html" class="submenu-item">Surat Keluar</a>
+                    <a href="data-sk-lainnya.html" class="submenu-item">SK / Lainnya</a>
+                </div>
+                <div class="menu-category">Administrasi</div>
+                <div class="menu-item"><div class="menu-icon"><i class="fa-solid fa-share-from-square"></i></div><span>Disposisi</span><i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i></div>
+                <div class="submenu">
+                    <a href="disposisi-masuk.html" class="submenu-item">Kotak Masuk</a>
+                    <a href="disposisi-riwayat.html" class="submenu-item">Riwayat</a>
+                </div>
+                <div class="menu-item active"><div class="menu-icon"><i class="fa-solid fa-gear"></i></div><span>Pengaturan</span><i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i></div>
+                <div class="submenu">
+                    <a href="kelola-pengguna.html" class="submenu-item" style="color: var(--white); font-weight: 500;">Data Pengguna</a>
+                    <a href="kelola-kategori.html" class="submenu-item">Kategori Arsip</a>
+                </div>
+                <a href="login.html" class="menu-item" style="margin-top: 2rem; color: #ef4444;"><div class="menu-icon"><i class="fa-solid fa-right-from-bracket"></i></div><span>Logout</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-bar"><i class="fa-solid fa-magnifying-glass search-icon"></i><input type="text" class="search-input" placeholder="Cari pengguna..."></div>
+                <div class="top-actions">
+                    <button class="action-btn"><i class="fa-regular fa-bell"></i><span class="notification-badge"></span></button>
+                    <div class="user-profile"><div class="avatar"><i class="fa-solid fa-user"></i></div></div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="data-header">
+                    <div>
+                        <h2 class="page-title">Kelola Data Pengguna</h2>
+                        <p class="text-muted">Manajemen akun pengguna sistem arsip digital</p>
+                    </div>
+                    <div class="data-actions">
+                        <button class="btn btn-success"><i class="fa-solid fa-plus"></i> Tambah Pengguna</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="entries-select">Tampilkan <select><option>10</option><option>25</option><option>50</option></select> data</div>
+                        </div>
+                        <div class="toolbar-right">
+                            <div class="table-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari pengguna..."></div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="sortable sorted">No <i class="fa-solid fa-sort-up sort-icon"></i></th>
+                                    <th class="sortable">Nama & Email <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="sortable">NIP <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="sortable">Role <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th>Status</th>
+                                    <th>Terakhir Login</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">AS</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Ahmad Syarif</div>
+                                                <div class="user-email">ahmad.syarif@kelekar.go.id</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>198501012010011001</td>
+                                    <td><span class="role-badge admin"><i class="fa-solid fa-shield-halved"></i> Admin</span></td>
+                                    <td><span class="status-badge active"><i class="fa-solid fa-check-circle"></i> Aktif</span></td>
+                                    <td>16 Nov 2025, 14:20</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                                            <button class="action-btn-sm reset" title="Reset Password"><i class="fa-solid fa-key"></i></button>
+                                            <button class="action-btn-sm delete" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">BW</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Budi Wibowo</div>
+                                                <div class="user-email">budi.wibowo@kelekar.go.id</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>199003152015021002</td>
+                                    <td><span class="role-badge staff"><i class="fa-solid fa-user"></i> Staf</span></td>
+                                    <td><span class="status-badge active"><i class="fa-solid fa-check-circle"></i> Aktif</span></td>
+                                    <td>16 Nov 2025, 10:15</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                                            <button class="action-btn-sm reset" title="Reset Password"><i class="fa-solid fa-key"></i></button>
+                                            <button class="action-btn-sm delete" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">SA</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Siti Aminah</div>
+                                                <div class="user-email">siti.aminah@kelekar.go.id</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>199207082018012001</td>
+                                    <td><span class="role-badge staff"><i class="fa-solid fa-user"></i> Staf</span></td>
+                                    <td><span class="status-badge active"><i class="fa-solid fa-check-circle"></i> Aktif</span></td>
+                                    <td>15 Nov 2025, 16:45</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                                            <button class="action-btn-sm reset" title="Reset Password"><i class="fa-solid fa-key"></i></button>
+                                            <button class="action-btn-sm delete" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">DP</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Dedi Prasetyo</div>
+                                                <div class="user-email">dedi.prasetyo@kelekar.go.id</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>198805202013011003</td>
+                                    <td><span class="role-badge staff"><i class="fa-solid fa-user"></i> Staf</span></td>
+                                    <td><span class="status-badge inactive"><i class="fa-solid fa-times-circle"></i> Nonaktif</span></td>
+                                    <td>10 Nov 2025, 09:30</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                                            <button class="action-btn-sm reset" title="Reset Password"><i class="fa-solid fa-key"></i></button>
+                                            <button class="action-btn-sm delete" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar">RH</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Rina Handayani</div>
+                                                <div class="user-email">rina.handayani@kelekar.go.id</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>199512102019022001</td>
+                                    <td><span class="role-badge staff"><i class="fa-solid fa-user"></i> Staf</span></td>
+                                    <td><span class="status-badge active"><i class="fa-solid fa-check-circle"></i> Aktif</span></td>
+                                    <td>16 Nov 2025, 08:50</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                                            <button class="action-btn-sm reset" title="Reset Password"><i class="fa-solid fa-key"></i></button>
+                                            <button class="action-btn-sm delete" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <div class="table-info">Menampilkan 1-5 dari 12 pengguna</div>
+                        <div class="table-pagination">
+                            <button disabled><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="active">1</button>
+                            <button>2</button>
+                            <button>3</button>
+                            <button><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

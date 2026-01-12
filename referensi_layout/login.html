@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Sistem Arsip Digital Kecamatan Kelekar</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="login-body">
+    <div class="login-overlay"></div>
+
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">
+          <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <h1 class="login-title">SISTEM ARSIP DIGITAL</h1>
+        <p class="login-subtitle">Kantor Kecamatan Kelekar</p>
+      </div>
+
+      <form>
+        <div class="form-group">
+          <label for="email" class="form-label">Email / NIP</label>
+          <input
+            type="text"
+            id="email"
+            class="form-control"
+            placeholder="Masukkan Email atau NIP"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Kata Sandi</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            placeholder="Masukkan kata sandi"
+            required
+          />
+        </div>
+
+        <div class="checkbox-wrapper">
+          <div class="checkbox-group">
+            <input type="checkbox" id="remember" />
+            <label for="remember">Ingat saya</label>
+          </div>
+          <a href="#" class="btn-link">Lupa Kata Sandi?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full">LOGIN</button>
+      </form>
+
+      <div class="login-footer">
+        &copy; 2025 Kecamatan Kelekar. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>

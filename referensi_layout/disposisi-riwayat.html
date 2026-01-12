@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disposisi - Riwayat - Sistem Arsip Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .data-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .data-actions { display: flex; gap: 0.75rem; }
+        .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: var(--light-bg); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .toolbar-left { display: flex; align-items: center; gap: 1rem; }
+        .toolbar-right { display: flex; align-items: center; gap: 0.75rem; }
+        .entries-select { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--muted-text); }
+        .entries-select select { padding: 0.4rem 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--white); }
+        .table-search { position: relative; }
+        .table-search input { padding: 0.5rem 1rem 0.5rem 2.25rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); min-width: 200px; }
+        .table-search i { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--muted-text); font-size: 0.85rem; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { background: var(--light-bg); padding: 1rem 1.5rem; text-align: left; font-weight: 600; font-size: 0.85rem; color: var(--muted-text); text-transform: uppercase; letter-spacing: 0.03em; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+        .data-table th.sortable { cursor: pointer; user-select: none; }
+        .data-table th.sortable:hover { color: var(--primary-color); }
+        .data-table th .sort-icon { margin-left: 0.5rem; opacity: 0.4; }
+        .data-table th.sorted .sort-icon { opacity: 1; color: var(--primary-color); }
+        .data-table td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .data-table tr:hover { background: rgba(59, 130, 246, 0.02); }
+        .doc-title { font-weight: 500; color: var(--dark-text); margin-bottom: 0.15rem; }
+        .doc-number { font-size: 0.8rem; color: var(--muted-text); }
+        .direction-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 600; }
+        .direction-badge.incoming { background: #dbeafe; color: #1d4ed8; }
+        .direction-badge.outgoing { background: #dcfce7; color: #15803d; }
+        .status-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 600; }
+        .status-badge.completed { background: #dcfce7; color: #15803d; }
+        .status-badge.pending { background: #fef3c7; color: #b45309; }
+        .status-badge.forwarded { background: #e0e7ff; color: #4f46e5; }
+        .action-buttons { display: flex; gap: 0.5rem; }
+        .action-btn-sm { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); font-size: 0.85rem; }
+        .action-btn-sm.view { background: #dbeafe; color: #2563eb; }
+        .action-btn-sm.view:hover { background: #2563eb; color: white; }
+        .action-btn-sm.delete { background: #fee2e2; color: #dc2626; }
+        .action-btn-sm.delete:hover { background: #ef4444; color: white; }
+        .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: var(--light-bg); border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .table-info { font-size: 0.9rem; color: var(--muted-text); }
+        .table-pagination { display: flex; gap: 0.25rem; }
+        .table-pagination button { min-width: 36px; height: 36px; padding: 0 0.5rem; border: 1px solid var(--border-color); background: var(--white); border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: var(--transition); }
+        .table-pagination button:hover:not(:disabled) { border-color: var(--primary-color); color: var(--primary-color); }
+        .table-pagination button.active { background: var(--primary-color); border-color: var(--primary-color); color: white; }
+        .table-pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .submenu { display: block; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>SI-ARSIP KELEKAR</span>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="menu-category">Menu Utama</div>
+                <a href="dashboard.html" class="menu-item"><div class="menu-icon"><i class="fa-solid fa-gauge-high"></i></div><span>Dashboard</span></a>
+                <a href="upload-arsip.html" class="menu-item"><div class="menu-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><span>Upload Arsip</span></a>
+                <a href="pencarian-arsip.html" class="menu-item"><div class="menu-icon"><i class="fa-solid fa-magnifying-glass"></i></div><span>Pencarian Arsip</span></a>
+                <div class="menu-item"><div class="menu-icon"><i class="fa-solid fa-box-archive"></i></div><span>Data Arsip</span><i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i></div>
+                <div class="submenu">
+                    <a href="data-surat-masuk.html" class="submenu-item">Surat Masuk</a>
+                    <a href="data-surat-keluar.html" class="submenu-item">Surat Keluar</a>
+                    <a href="data-sk-lainnya.html" class="submenu-item">SK / Lainnya</a>
+                </div>
+                <div class="menu-category">Administrasi</div>
+                <div class="menu-item active"><div class="menu-icon"><i class="fa-solid fa-share-from-square"></i></div><span>Disposisi</span><i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i></div>
+                <div class="submenu">
+                    <a href="disposisi-masuk.html" class="submenu-item">Kotak Masuk</a>
+                    <a href="disposisi-riwayat.html" class="submenu-item" style="color: var(--white); font-weight: 500;">Riwayat</a>
+                </div>
+                <div class="menu-item"><div class="menu-icon"><i class="fa-solid fa-gear"></i></div><span>Pengaturan</span></div>
+                <a href="login.html" class="menu-item" style="margin-top: 2rem; color: #ef4444;"><div class="menu-icon"><i class="fa-solid fa-right-from-bracket"></i></div><span>Logout</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-bar"><i class="fa-solid fa-magnifying-glass search-icon"></i><input type="text" class="search-input" placeholder="Cari riwayat..."></div>
+                <div class="top-actions">
+                    <button class="action-btn"><i class="fa-regular fa-bell"></i><span class="notification-badge"></span></button>
+                    <div class="user-profile"><div class="avatar"><i class="fa-solid fa-user"></i></div></div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="data-header">
+                    <div>
+                        <h2 class="page-title">Riwayat Disposisi</h2>
+                        <p class="text-muted">Histori disposisi yang telah dikirim dan diterima</p>
+                    </div>
+                    <div class="data-actions">
+                        <button class="btn btn-secondary"><i class="fa-solid fa-file-export"></i> Export</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="entries-select">Tampilkan <select><option>10</option><option>25</option><option>50</option></select> data</div>
+                        </div>
+                        <div class="toolbar-right">
+                            <div class="table-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari riwayat..."></div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="sortable sorted">No <i class="fa-solid fa-sort-up sort-icon"></i></th>
+                                    <th class="sortable">Dokumen <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="sortable">Tanggal <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="sortable">Dari/Ke <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th>Arah</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <div>
+                                            <div class="doc-title">Undangan Rapat Koordinasi</div>
+                                            <div class="doc-number">005/123/KC/2025</div>
+                                        </div>
+                                    </td>
+                                    <td>16 Nov 2025, 14:30</td>
+                                    <td>Camat Kelekar</td>
+                                    <td><span class="direction-badge incoming"><i class="fa-solid fa-arrow-down"></i> Masuk</span></td>
+                                    <td><span class="status-badge completed"><i class="fa-solid fa-check-circle"></i> Selesai</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm view" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>
+                                        <div>
+                                            <div class="doc-title">Permohonan KTP Warga</div>
+                                            <div class="doc-number">470/045/KC/2025</div>
+                                        </div>
+                                    </td>
+                                    <td>16 Nov 2025, 10:15</td>
+                                    <td>Kasubbag Umum</td>
+                                    <td><span class="direction-badge incoming"><i class="fa-solid fa-arrow-down"></i> Masuk</span></td>
+                                    <td><span class="status-badge pending"><i class="fa-solid fa-clock"></i> Pending</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm view" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>
+                                        <div>
+                                            <div class="doc-title">Laporan Keuangan Triwulan</div>
+                                            <div class="doc-number">900/089/KC/2025</div>
+                                        </div>
+                                    </td>
+                                    <td>15 Nov 2025, 16:20</td>
+                                    <td>Staf Keuangan</td>
+                                    <td><span class="direction-badge outgoing"><i class="fa-solid fa-arrow-up"></i> Keluar</span></td>
+                                    <td><span class="status-badge forwarded"><i class="fa-solid fa-share"></i> Diteruskan</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm view" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>
+                                        <div>
+                                            <div class="doc-title">Surat Pengantar Nikah</div>
+                                            <div class="doc-number">474/021/KC/2025</div>
+                                        </div>
+                                    </td>
+                                    <td>15 Nov 2025, 14:00</td>
+                                    <td>Staf Pelayanan</td>
+                                    <td><span class="direction-badge incoming"><i class="fa-solid fa-arrow-down"></i> Masuk</span></td>
+                                    <td><span class="status-badge completed"><i class="fa-solid fa-check-circle"></i> Selesai</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm view" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>
+                                        <div>
+                                            <div class="doc-title">SK Pengangkatan Perangkat</div>
+                                            <div class="doc-number">800/012/KC/2025</div>
+                                        </div>
+                                    </td>
+                                    <td>14 Nov 2025, 09:45</td>
+                                    <td>Kepala Desa Binaan</td>
+                                    <td><span class="direction-badge outgoing"><i class="fa-solid fa-arrow-up"></i> Keluar</span></td>
+                                    <td><span class="status-badge completed"><i class="fa-solid fa-check-circle"></i> Selesai</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm view" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>
+                                        <div>
+                                            <div class="doc-title">Permohonan Izin Usaha</div>
+                                            <div class="doc-number">503/012/KC/2025</div>
+                                        </div>
+                                    </td>
+                                    <td>13 Nov 2025, 15:20</td>
+                                    <td>Kasi Perizinan</td>
+                                    <td><span class="direction-badge outgoing"><i class="fa-solid fa-arrow-up"></i> Keluar</span></td>
+                                    <td><span class="status-badge forwarded"><i class="fa-solid fa-share"></i> Diteruskan</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn-sm view" title="Lihat Detail"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <div class="table-info">Menampilkan 1-6 dari 64 data</div>
+                        <div class="table-pagination">
+                            <button disabled><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="active">1</button>
+                            <button>2</button>
+                            <button>3</button>
+                            <button>...</button>
+                            <button>11</button>
+                            <button><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
