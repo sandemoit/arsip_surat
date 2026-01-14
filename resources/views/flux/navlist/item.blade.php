@@ -15,41 +15,34 @@
 ])
 
 @php
-// Button should be a square if it has no text contents...
 $square ??= $slot->isEmpty();
-
-// Size-up icons in square/icon-only buttons...
 $iconClasses = Flux::classes($square ? 'size-5!' : 'size-4!');
 
 $classes = Flux::classes()
     ->add('h-10 lg:h-8 relative flex items-center gap-3 rounded-lg')
     ->add($square ? 'px-2.5!' : '')
     ->add('py-0 text-start w-full px-3 my-px')
-    ->add('text-zinc-600')
+    ->add('text-slate-300')
     ->add(match ($variant) {
         'outline' => match ($accent) {
             true => [
-                'data-current:text-zinc-900 hover:data-current:text-zinc-900',
-                'data-current:bg-white data-current:border data-current:border-zinc-200',
-                'hover:text-zinc-900 hover:bg-zinc-100',
+                'data-current:text-white data-current:bg-slate-800 data-current:border data-current:border-slate-700',
+                'hover:text-white hover:bg-slate-800',
                 'border border-transparent',
             ],
             false => [
-                'data-current:text-zinc-800 data-current:border-zinc-200',
-                'data-current:bg-white data-current:border data-current:border-zinc-200 data-current:shadow-xs',
-                'hover:text-zinc-800 hover:bg-zinc-100',
+                'data-current:text-white data-current:bg-slate-800 data-current:border data-current:border-slate-700',
+                'hover:text-white hover:bg-slate-800',
             ],
         },
         default => match ($accent) {
             true => [
-                'data-current:text-zinc-900 hover:data-current:text-zinc-900',
-                'data-current:bg-zinc-100',
-                'hover:text-zinc-900 hover:bg-zinc-100',
+                'data-current:text-white data-current:bg-slate-800',
+                'hover:text-white hover:bg-slate-800',
             ],
             false => [
-                'data-current:text-zinc-800',
-                'data-current:bg-zinc-100',
-                'hover:text-zinc-800 hover:bg-zinc-100',
+                'data-current:text-white data-current:bg-slate-800',
+                'hover:text-white hover:bg-slate-800',
             ],
         },
     })
@@ -67,7 +60,7 @@ $classes = Flux::classes()
 
             <?php if ($iconDot): ?>
                 <div class="absolute top-[-2px] end-[-2px]">
-                    <div class="size-[6px] rounded-full bg-zinc-500"></div>
+                    <div class="size-[6px] rounded-full bg-slate-400"></div>
                 </div>
             <?php endif; ?>
         </div>

@@ -15,7 +15,7 @@
 >
     <button
         type="button"
-        class="py-5 group/disclosure-button mb-[2px] flex h-10 w-full items-center justify-between rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 lg:h-8 px-3"
+        class="py-5 group/disclosure-button mb-[2px] flex h-10 w-full items-center justify-between rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white lg:h-8 px-3"
     >
         <div class="flex items-center gap-3">
             @if ($icon)
@@ -31,7 +31,7 @@
     </button>
 
     <div class="relative hidden space-y-[2px] ps-7 data-open:block" @if ($expanded === true) data-open @endif>
-        <div class="absolute inset-y-[3px] start-0 ms-4 w-px bg-slate-200"></div>
+        <div class="absolute inset-y-[3px] start-0 ms-4 w-px bg-slate-700"></div>
 
         {{ $slot }}
     </div>
@@ -41,7 +41,7 @@
 
 <div {{ $attributes->class('block space-y-[2px]') }}>
     <div class="px-1 py-2">
-        <div class="text-xs leading-none text-zinc-500">{{ $heading }}</div>
+        <div class="text-xs leading-none text-slate-500">{{ $heading }}</div>
     </div>
 
     <div>
