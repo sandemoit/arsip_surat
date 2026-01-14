@@ -33,6 +33,7 @@ class Category extends Model
     protected $fillable = [
         'code',
         'name',
+        'description',
         'retention_years',
     ];
 

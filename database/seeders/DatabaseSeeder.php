@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Category;
+use App\Models\User;
 use App\Services\RoleService;
 use Illuminate\Database\Seeder;
 
@@ -40,16 +40,16 @@ class DatabaseSeeder extends Seeder
 
         // Seed Kategori Default
         $categories = [
-            ['code' => '000', 'name' => 'Umum', 'retention_years' => 5],
-            ['code' => '100', 'name' => 'Kepegawaian', 'retention_years' => 10],
-            ['code' => '200', 'name' => 'Keuangan', 'retention_years' => 10],
-            ['code' => '300', 'name' => 'Peralatan', 'retention_years' => 5],
-            ['code' => '400', 'name' => 'Pembangunan', 'retention_years' => 10],
-            ['code' => '470', 'name' => 'Kependudukan', 'retention_years' => 10],
-            ['code' => '500', 'name' => 'Kesejahteraan Rakyat', 'retention_years' => 5],
-            ['code' => '600', 'name' => 'Pemerintahan', 'retention_years' => 10],
-            ['code' => '700', 'name' => 'Perizinan', 'retention_years' => 5],
-            ['code' => '800', 'name' => 'Keamanan dan Ketertiban', 'retention_years' => 5],
+            ['code' => '000', 'name' => 'Umum', 'description' => 'Surat undangan, pemberitahuan, pengumuman', 'retention_years' => 5],
+            ['code' => '100', 'name' => 'Kepegawaian', 'description' => 'SK Pegawai, cuti, mutasi, pensiun', 'retention_years' => 10],
+            ['code' => '200', 'name' => 'Keuangan', 'description' => 'Laporan, SPJ, nota dinas keuangan', 'retention_years' => 10],
+            ['code' => '300', 'name' => 'Peralatan', 'description' => 'Inventaris, pengadaan, pemeliharaan', 'retention_years' => 5],
+            ['code' => '400', 'name' => 'Pembangunan', 'description' => 'Proyek, infrastruktur, perencanaan', 'retention_years' => 10],
+            ['code' => '470', 'name' => 'Kependudukan', 'description' => 'Surat keterangan, KTP, KK, dokumen kependudukan', 'retention_years' => 10],
+            ['code' => '500', 'name' => 'Kesejahteraan Rakyat', 'description' => 'Bantuan sosial, kesehatan, pendidikan', 'retention_years' => 5],
+            ['code' => '600', 'name' => 'Pemerintahan', 'description' => 'Kebijakan, peraturan, keputusan', 'retention_years' => 10],
+            ['code' => '700', 'name' => 'Perizinan', 'description' => 'IMB, izin usaha, rekomendasi', 'retention_years' => 5],
+            ['code' => '800', 'name' => 'Keamanan dan Ketertiban', 'description' => 'Laporan keamanan, koordinasi linmas', 'retention_years' => 5],
         ];
 
         foreach ($categories as $category) {
@@ -60,9 +60,8 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->command->info('Seeding selesai:');
-        $this->command->info('- Admin: admin@arsipsurat.test / password');
+        $this->command->info('- Admin: admin@gmail.com / password');
         $this->command->info('- Staf: staf@arsipsurat.test / password');
-        $this->command->info('- ' . count($categories) . ' kategori arsip');
+        $this->command->info('- '.count($categories).' kategori arsip');
     }
 }
-

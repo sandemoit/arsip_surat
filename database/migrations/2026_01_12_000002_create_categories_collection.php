@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use MongoDB\Laravel\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use MongoDB\Laravel\Schema\Blueprint;
 
 return new class extends Migration
 {
@@ -13,7 +13,7 @@ return new class extends Migration
 
     /**
      * Run the migrations.
-     * 
+     *
      * Membuat collection categories dengan indexes untuk pencarian cepat.
      */
     public function up(): void
@@ -21,9 +21,10 @@ return new class extends Migration
         Schema::connection('mongodb')->create('categories', function (Blueprint $collection) {
             // Index unik untuk kode kategori
             $collection->unique('code');
-            
+
             // Index untuk pencarian nama
             $collection->index('name');
+            $collection->index('description');
         });
     }
 

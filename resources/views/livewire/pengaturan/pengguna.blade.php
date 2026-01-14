@@ -1,82 +1,69 @@
-<div class="p-6">
+<div>
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <flux:heading class="text-slate-900 font-bold" size="xl">Kelola Data Pengguna</flux:heading>
-            <flux:text class="text-zinc-500 dark:text-zinc-400">Manajemen akun pengguna sistem arsip digital</flux:text>
+    <div class="mb-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-zinc-900">Kelola Data Pengguna</h1>
+                <p class="text-md text-zinc-500 mt-1">Manajemen akun pengguna sistem arsip digital</p>
+            </div>
+            <flux:button icon="plus" class="bg-green-500 text-white hover:bg-green-600">
+                Tambah Pengguna
+            </flux:button>
         </div>
-        <flux:button icon="plus" variant="primary">
-            Tambah Pengguna
-        </flux:button>
-    </div>
-
-    {{-- Filters --}}
-    <div class="flex items-center justify-between mb-4 gap-4">
-        <div class="flex items-center gap-2">
-            <flux:text>Tampilkan</flux:text>
-            <flux:select wire:model.live="perPage" class="w-20">
-                <flux:select.option value="10">10</flux:select.option>
-                <flux:select.option value="25">25</flux:select.option>
-                <flux:select.option value="50">50</flux:select.option>
-            </flux:select>
-            <flux:text>data</flux:text>
-        </div>
-        <flux:input 
-            icon="magnifying-glass" 
-            placeholder="Cari pengguna..." 
-            wire:model.live.debounce.300ms="search" 
-            class="w-64"
-        />
     </div>
 
     {{-- Table --}}
-    <flux:table :paginate="$users">
-        <flux:table.columns>
-            <flux:table.column>No</flux:table.column>
-            <flux:table.column>Nama & Email</flux:table.column>
-            <flux:table.column>NIP</flux:table.column>
-            <flux:table.column>Role</flux:table.column>
-            <flux:table.column>Aksi</flux:table.column>
-        </flux:table.columns>
+    <x-datatable 
+        :items="$users"
+        searchPlaceholder="Cari pengguna..."
+        emptyMessage="Tidak ada data pengguna"
+    >
+        <x-slot:columns>
+            <x-datatable.th w="60">No</x-datatable.th>
+            <x-datatable.th>Nama & Email</x-datatable.th>
+            <x-datatable.th>NIP</x-datatable.th>
+            <x-datatable.th center>Role</x-datatable.th>
+            <x-datatable.th center w="150">Aksi</x-datatable.th>
+        </x-slot:columns>
 
-        <flux:table.rows>
-            @forelse($users as $index => $user)
-                <flux:table.row>
-                    <flux:table.cell>{{ $users->firstItem() + $index }}</flux:table.cell>
-                    <flux:table.cell>
-                        <div class="flex items-center gap-3">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700 text-sm font-semibold">
-                                {{ $user->initials() }}
-                            </div>
-                            <div>
-                                <div class="font-medium">{{ $user->name }}</div>
-                                <div class="text-sm text-zinc-500">{{ $user->email }}</div>
-                            </div>
+        @foreach ($users as $index => $user)
+            <x-datatable.row>
+                <x-datatable.cell>
+                    <span class="font-medium text-blue-600">{{ $users->firstItem() + $index }}</span>
+                </x-datatable.cell>
+                
+                <x-datatable.cell wrap>
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-200 text-sm font-semibold flex-shrink-0">
+                            {{ $user->initials() }}
                         </div>
-                    </flux:table.cell>
-                    <flux:table.cell>{{ $user->nip ?? '-' }}</flux:table.cell>
-                    <flux:table.cell>
-                        @if($user->role === 'admin')
-                            <flux:badge color="green" size="sm">Admin</flux:badge>
-                        @else
-                            <flux:badge color="blue" size="sm">Staf</flux:badge>
-                        @endif
-                    </flux:table.cell>
-                    <flux:table.cell>
-                        <div class="flex gap-1">
-                            <flux:button icon="pencil" size="sm" variant="ghost" />
-                            <flux:button icon="key" size="sm" variant="ghost" />
-                            <flux:button icon="trash" size="sm" variant="ghost" class="text-red-500 hover:text-red-700" />
+                        <div>
+                            <p class="font-medium text-zinc-900">{{ $user->name }}</p>
+                            <p class="text-sm text-zinc-500">{{ $user->email }}</p>
                         </div>
-                    </flux:table.cell>
-                </flux:table.row>
-            @empty
-                <flux:table.row>
-                    <flux:table.cell colspan="5" class="text-center py-8 text-zinc-500">
-                        Tidak ada data pengguna.
-                    </flux:table.cell>
-                </flux:table.row>
-            @endforelse
-        </flux:table.rows>
-    </flux:table>
+                    </div>
+                </x-datatable.cell>
+                
+                <x-datatable.cell>{{ $user->nip ?? '-' }}</x-datatable.cell>
+                
+                <x-datatable.cell center>
+                    @if($user->role === 'admin')
+                        <x-datatable.badge color="green">Admin</x-datatable.badge>
+                    @else
+                        <x-datatable.badge color="blue">Staf</x-datatable.badge>
+                    @endif
+                </x-datatable.cell>
+                
+                <x-datatable.cell center>
+                    <x-datatable.actions edit="openEditModal('{{ $user->id }}')" delete="confirmDelete('{{ $user->id }}')">
+                        <button class="p-2 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-600 transition-colors" title="Reset Password">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                            </svg>
+                        </button>
+                    </x-datatable.actions>
+                </x-datatable.cell>
+            </x-datatable.row>
+        @endforeach
+    </x-datatable>
 </div>
