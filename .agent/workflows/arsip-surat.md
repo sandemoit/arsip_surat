@@ -164,3 +164,7 @@ $middleware->alias(['role' => \App\Http\Middleware\CheckRole::class]);
 -   MongoDB Laravel: https://www.mongodb.com/docs/drivers/php/laravel-mongodb
 -   Flux UI: https://fluxui.dev
 -   Livewire Volt: https://livewire.laravel.com/docs/volt
+
+# Template UI
+
+-   Gunakan sesuai yang di referensi_layout, tidak ada dark mode. default nya light mode. mau di mode dark tetep light, jadi dark tidak di pakai

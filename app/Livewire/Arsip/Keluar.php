@@ -8,7 +8,6 @@ class Keluar extends Component
 {
     public function render()
     {
-        return view('livewire.arsip.keluar')
-            ->layout('components.layouts.app.sidebar');
+        return view('livewire.arsip.keluar');
     }
 }

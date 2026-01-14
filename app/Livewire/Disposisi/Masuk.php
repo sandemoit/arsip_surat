@@ -8,7 +8,6 @@ class Masuk extends Component
 {
     public function render()
     {
-        return view('livewire.disposisi.masuk')
-            ->layout('components.layouts.app.sidebar');
+        return view('livewire.disposisi.masuk');
     }
 }

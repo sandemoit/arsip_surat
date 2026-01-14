@@ -11,6 +11,7 @@ class Pengguna extends Component
     use WithPagination;
 
     public string $search = '';
+
     public int $perPage = 10;
 
     public function updatedSearch(): void
@@ -24,9 +25,9 @@ class Pengguna extends Component
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('email', 'like', '%' . $this->search . '%')
-                  ->orWhere('nip', 'like', '%' . $this->search . '%');
+                $q->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('email', 'like', '%'.$this->search.'%')
+                    ->orWhere('nip', 'like', '%'.$this->search.'%');
             });
         }
 
@@ -34,6 +35,6 @@ class Pengguna extends Component
 
         return view('livewire.pengaturan.pengguna', [
             'users' => $query->paginate($this->perPage),
-        ])->layout('components.layouts.app.sidebar');
+        ]);
     }
 }

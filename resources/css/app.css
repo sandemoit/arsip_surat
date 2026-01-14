@@ -6,7 +6,7 @@
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* @custom-variant dark (&:where(.dark, .dark *)); */
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -61,6 +61,19 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+/* SI-ARSIP KELEKAR - Sidebar Styling */
+
+/* Navlist expandable group - chevron arrow styling */
+[data-flux-navlist-group][data-expandable] > button {
+    @apply flex items-center justify-between w-full;
+}
+
+/* Icon dan text di kiri, chevron di kanan */
+[data-flux-navlist-group][data-expandable] > button > svg:last-child {
+    @apply ml-auto text-slate-400;
+}
+
+/* Pastikan chevron terlihat */
+[data-flux-navlist-group][data-expandable] [data-flux-icon] {
+    @apply text-slate-400;
+}

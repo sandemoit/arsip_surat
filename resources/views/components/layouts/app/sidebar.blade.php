@@ -3,8 +3,8 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <body class="min-h-screen bg-slate-100">
+        <flux:sidebar sticky stashable class="border-e border-slate-700 bg-slate-900 text-slate-300">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
@@ -23,7 +23,7 @@
                     <flux:navlist.item icon="magnifying-glass" :href="route('arsip.search')" :current="request()->routeIs('arsip.search')" wire:navigate>
                         {{ __('Pencarian Arsip') }}
                     </flux:navlist.item>
-                    <flux:navlist.group expandable :heading="__('Data Arsip')" class="grid">
+                    <flux:navlist.group expandable icon="archive-box" :expanded="request()->routeIs('arsip.masuk') || request()->routeIs('arsip.keluar') || request()->routeIs('arsip.lainnya')" :heading="__('Data Arsip')" class="grid">
                         <flux:navlist.item :href="route('arsip.masuk')" :current="request()->routeIs('arsip.masuk')" wire:navigate>
                             {{ __('Surat Masuk') }}
                         </flux:navlist.item>
@@ -38,7 +38,7 @@
 
                 {{-- ADMINISTRASI --}}
                 <flux:navlist.group :heading="__('Administrasi')" class="grid mt-4">
-                    <flux:navlist.group expandable :heading="__('Disposisi')" class="grid">
+                    <flux:navlist.group expandable icon="share" :expanded="request()->routeIs('disposisi.*')" :heading="__('Disposisi')" class="grid">
                         <flux:navlist.item :href="route('disposisi.masuk')" :current="request()->routeIs('disposisi.masuk')" wire:navigate>
                             {{ __('Kotak Masuk') }}
                         </flux:navlist.item>
@@ -49,7 +49,7 @@
 
                     {{-- Menu Pengaturan hanya untuk Admin --}}
                     @if(auth()->user()->isAdmin())
-                    <flux:navlist.group expandable :heading="__('Pengaturan')" class="grid">
+                    <flux:navlist.group expandable icon="cog-6-tooth" :expanded="request()->routeIs('pengguna.*') || request()->routeIs('kategori.*')" :heading="__('Pengaturan')" class="grid">
                         <flux:navlist.item :href="route('pengguna.index')" :current="request()->routeIs('pengguna.*')" wire:navigate>
                             {{ __('Data Pengguna') }}
                         </flux:navlist.item>

@@ -2,7 +2,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between mb-6">
         <div>
-            <flux:heading size="xl">Kelola Data Pengguna</flux:heading>
+            <flux:heading class="text-slate-900 font-bold" size="xl">Kelola Data Pengguna</flux:heading>
             <flux:text class="text-zinc-500 dark:text-zinc-400">Manajemen akun pengguna sistem arsip digital</flux:text>
         </div>
         <flux:button icon="plus" variant="primary">
