@@ -50,34 +50,34 @@ $classes = Flux::classes()
 @endphp
 
 <flux:button-or-link :attributes="$attributes->class($classes)" data-flux-navlist-item>
-    <?php if ($icon): ?>
+    <?php if ($icon) { ?>
         <div class="relative">
-            <?php if (is_string($icon) && $icon !== ''): ?>
+            <?php if (is_string($icon) && $icon !== '') { ?>
                 <flux:icon :$icon :variant="$iconVariant" class="{!! $iconClasses !!}" />
-            <?php else: ?>
+            <?php } else { ?>
                 {{ $icon }}
-            <?php endif; ?>
+            <?php } ?>
 
-            <?php if ($iconDot): ?>
+            <?php if ($iconDot) { ?>
                 <div class="absolute top-[-2px] end-[-2px]">
                     <div class="size-[6px] rounded-full bg-slate-400"></div>
                 </div>
-            <?php endif; ?>
+            <?php } ?>
         </div>
-    <?php endif; ?>
+    <?php } ?>
 
-    <?php if ($slot->isNotEmpty()): ?>
+    <?php if ($slot->isNotEmpty()) { ?>
         <div class="flex-1 text-sm font-medium leading-none whitespace-nowrap [[data-nav-footer]_&]:hidden [[data-nav-sidebar]_[data-nav-footer]_&]:block" data-content>{{ $slot }}</div>
-    <?php endif; ?>
+    <?php } ?>
 
-    <?php if (is_string($iconTrailing) && $iconTrailing !== ''): ?>
+    <?php if (is_string($iconTrailing) && $iconTrailing !== '') { ?>
         <flux:icon :icon="$iconTrailing" :variant="$iconVariant" class="size-4!" />
-    <?php elseif ($iconTrailing): ?>
+    <?php } elseif ($iconTrailing) { ?>
         {{ $iconTrailing }}
-    <?php endif; ?>
+    <?php } ?>
 
-    <?php if (isset($badge) && $badge !== ''): ?>
+    <?php if (isset($badge) && $badge !== '') { ?>
         <?php $badgeAttributes = Flux::attributesAfter('badge:', $attributes, ['color' => $badgeColor]); ?>
         <flux:navlist.badge :attributes="$badgeAttributes">{{ $badge }}</flux:navlist.badge>
-    <?php endif; ?>
+    <?php } ?>
 </flux:button-or-link>
