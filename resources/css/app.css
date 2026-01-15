@@ -72,3 +72,33 @@ select:focus[data-flux-control] {
 [data-flux-navlist-group][data-expandable] [data-flux-icon] {
     @apply text-slate-400;
 }
+
+/* Fix Flux UI label & input styling untuk light mode */
+[data-flux-label] {
+    @apply text-zinc-700 font-medium text-sm;
+}
+
+[data-flux-control] {
+    @apply bg-white text-zinc-900 border-zinc-300;
+}
+
+[data-flux-control]::placeholder {
+    @apply text-zinc-400;
+}
+
+/* Select dropdown text */
+[data-flux-select] [data-flux-control] {
+    @apply text-zinc-900;
+}
+
+/* Textarea styling */
+textarea[data-flux-control] {
+    @apply bg-white text-zinc-900;
+}
+
+/* Checkbox label */
+[data-flux-checkbox] + label,
+[data-flux-checkbox] ~ span {
+    @apply text-zinc-700;
+}
+

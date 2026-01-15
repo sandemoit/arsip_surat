@@ -5,6 +5,7 @@ use App\Livewire\Arsip\Lainnya as ArsipLainnya;
 use App\Livewire\Arsip\Masuk as ArsipMasuk;
 use App\Livewire\Arsip\Search as ArsipSearch;
 use App\Livewire\Arsip\Upload as ArsipUpload;
+use App\Livewire\Dashboard;
 use App\Livewire\Disposisi\Masuk as DisposisiMasuk;
 use App\Livewire\Disposisi\Riwayat as DisposisiRiwayat;
 use App\Livewire\Pengaturan\Pengguna;
@@ -16,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
+Route::get('dashboard', Dashboard::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 

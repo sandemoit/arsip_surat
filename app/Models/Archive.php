@@ -7,9 +7,9 @@ use MongoDB\Laravel\Eloquent\Model;
 
 /**
  * Model Archive - Arsip Digital Utama
- * 
+ *
  * Menggunakan fitur schema-less MongoDB untuk metadata dinamis.
- * 
+ *
  * @property string $_id
  * @property string $category_id Referensi ke categories
  * @property string $uploader_id Referensi ke users (yang upload)
@@ -102,5 +102,13 @@ class Archive extends Model
     public function scopeSearchContent($query, string $keyword)
     {
         return $query->where('ocr_text', 'like', "%{$keyword}%");
+    }
+
+    /**
+     * Scope: Filter berdasarkan jenis surat
+     */
+    public function scopeByJenis($query, string $jenis)
+    {
+        return $query->where('jenis_surat', $jenis);
     }
 }
