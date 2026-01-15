@@ -12,6 +12,7 @@ use MongoDB\Laravel\Eloquent\Model;
  * @property string $code Kode klasifikasi (misal: "470")
  * @property string $name Nama klasifikasi (misal: "Kependudukan")
  * @property int $retention_years Masa simpan arsip dalam tahun
+ * @property string $color Warna badge (blue, green, red, amber, purple, pink, indigo, cyan)
  */
 class Category extends Model
 {
@@ -28,6 +29,20 @@ class Category extends Model
     protected $collection = 'categories';
 
     /**
+     * Available badge colors
+     */
+    public const COLORS = [
+        'blue' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-700'],
+        'green' => ['bg' => 'bg-green-100', 'text' => 'text-green-700'],
+        'red' => ['bg' => 'bg-red-100', 'text' => 'text-red-700'],
+        'amber' => ['bg' => 'bg-amber-100', 'text' => 'text-amber-700'],
+        'purple' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-700'],
+        'pink' => ['bg' => 'bg-pink-100', 'text' => 'text-pink-700'],
+        'indigo' => ['bg' => 'bg-indigo-100', 'text' => 'text-indigo-700'],
+        'cyan' => ['bg' => 'bg-cyan-100', 'text' => 'text-cyan-700'],
+    ];
+
+    /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
@@ -35,6 +50,7 @@ class Category extends Model
         'name',
         'description',
         'retention_years',
+        'color',
     ];
 
     /**
@@ -45,6 +61,16 @@ class Category extends Model
         return [
             'retention_years' => 'integer',
         ];
+    }
+
+    /**
+     * Get badge CSS classes
+     */
+    public function getBadgeClassesAttribute(): string
+    {
+        $color = $this->color ?? 'blue';
+        $styles = self::COLORS[$color] ?? self::COLORS['blue'];
+        return $styles['bg'] . ' ' . $styles['text'];
     }
 
     /**

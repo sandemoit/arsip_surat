@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Disposisi;
 
+use App\Exports\DisposisiExport;
 use App\Models\Disposition;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Riwayat extends Component
 {
@@ -14,8 +16,6 @@ class Riwayat extends Component
 
     #[Url]
     public string $search = '';
-
-    public string $filter = 'sent'; // sent, received
 
     public int $perPage = 10;
 
@@ -29,9 +29,8 @@ class Riwayat extends Component
         $this->resetPage();
     }
 
-    public function setFilter(string $filter): void
+    public function updatingPerPage(): void
     {
-        $this->filter = $filter;
         $this->resetPage();
     }
 
@@ -65,17 +64,22 @@ class Riwayat extends Component
         $this->viewDisposition = null;
     }
 
+    public function export()
+    {
+        $filename = 'riwayat-disposisi-' . now()->format('Y-m-d-His') . '.xlsx';
+        return Excel::download(new DisposisiExport, $filename);
+    }
+
     public function render()
     {
         $userId = Auth::id();
 
-        $query = Disposition::with(['archive', 'sender', 'receiver', 'archive.category']);
-
-        if ($this->filter === 'sent') {
-            $query->where('sender_id', $userId);
-        } else {
-            $query->where('receiver_id', $userId)->selesai();
-        }
+        // Query: semua disposisi yang related dengan user (sebagai sender ATAU receiver)
+        $query = Disposition::with(['archive', 'sender', 'receiver', 'archive.category'])
+            ->where(function ($q) use ($userId) {
+                $q->where('sender_id', $userId)
+                    ->orWhere('receiver_id', $userId);
+            });
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -91,8 +95,6 @@ class Riwayat extends Component
 
         return view('livewire.disposisi.riwayat', [
             'dispositions' => $query->paginate($this->perPage),
-            'sentCount' => Disposition::where('sender_id', $userId)->count(),
-            'receivedCount' => Disposition::where('receiver_id', $userId)->selesai()->count(),
         ]);
     }
 }

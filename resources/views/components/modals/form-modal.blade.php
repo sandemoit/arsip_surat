@@ -13,10 +13,10 @@ $maxWidthClass = [
 ][$maxWidth] ?? 'max-w-md';
 @endphp
 
-<flux:modal {{ $attributes->merge(['class' => $maxWidthClass]) }}>
-    <div class="space-y-4">
+<flux:modal {{ $attributes->merge(['class' => $maxWidthClass . ' !bg-white [&_[data-modal-close]]:!text-zinc-500 [&_[data-modal-close]:hover]:!bg-zinc-100 [&_[data-modal-close]:hover]:!text-zinc-700']) }}>
+    <div class="space-y-4 bg-white text-zinc-900">
         @if($title)
-            <flux:heading size="lg">{{ $title }}</flux:heading>
+            <h2 class="text-lg font-semibold text-zinc-900 pr-8">{{ $title }}</h2>
         @endif
         
         {{ $slot }}

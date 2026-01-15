@@ -33,11 +33,26 @@ class Archive extends Model
     protected $collection = 'archives';
 
     /**
+     * Status arsip
+     */
+    public const STATUS_ACTIVE = 'aktif';
+    public const STATUS_ARCHIVED = 'arsip';
+    public const STATUS_DISPOSED = 'musnah';
+
+    public const STATUSES = [
+        self::STATUS_ACTIVE => ['label' => 'Aktif', 'bg' => 'bg-green-100', 'text' => 'text-green-700'],
+        self::STATUS_ARCHIVED => ['label' => 'Arsip', 'bg' => 'bg-blue-100', 'text' => 'text-blue-700'],
+        self::STATUS_DISPOSED => ['label' => 'Musnah', 'bg' => 'bg-red-100', 'text' => 'text-red-700'],
+    ];
+
+    /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
         'category_id',
         'uploader_id',
+        'jenis_surat',
+        'status',
         'main_meta',
         'dynamic_meta',
         'file_info',
@@ -54,6 +69,29 @@ class Archive extends Model
             'dynamic_meta' => 'array',
             'file_info' => 'array',
         ];
+    }
+
+    /**
+     * Boot method - set default status
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($archive) {
+            if (empty($archive->status)) {
+                $archive->status = self::STATUS_ACTIVE;
+            }
+        });
+    }
+
+    /**
+     * Get status badge classes
+     */
+    public function getStatusBadgeAttribute(): array
+    {
+        $status = $this->status ?? self::STATUS_ACTIVE;
+        return self::STATUSES[$status] ?? self::STATUSES[self::STATUS_ACTIVE];
     }
 
     /**

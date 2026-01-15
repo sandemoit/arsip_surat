@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Arsip;
 
+use App\Exports\ArsipExport;
 use App\Models\Archive;
 use App\Models\Category;
 use App\Models\Disposition;
@@ -12,6 +13,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Masuk extends Component
 {
@@ -162,6 +164,12 @@ class Masuk extends Component
     {
         $this->showDeleteModal = false;
         $this->deleteId = null;
+    }
+
+    public function export()
+    {
+        $filename = 'arsip-surat-masuk-' . now()->format('Y-m-d-His') . '.xlsx';
+        return Excel::download(new ArsipExport('masuk', $this->filterCategory, $this->search), $filename);
     }
 
     // Disposisi methods

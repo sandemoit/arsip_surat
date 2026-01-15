@@ -6,9 +6,10 @@
                 <h1 class="text-2xl font-bold text-zinc-900">Kelola Data Pengguna</h1>
                 <p class="text-md text-zinc-500 mt-1">Manajemen akun pengguna sistem arsip digital</p>
             </div>
-            <flux:button icon="plus" class="bg-green-500 text-white hover:bg-green-600" wire:click="openCreateModal">
-                Tambah Pengguna
-            </flux:button>
+            <x-ui.button variant="success" wireClick="openCreateModal" wireTarget="openCreateModal" loadingText="Memuat...">
+                <svg class="w-4 h-4 shrink-0" wire:loading.remove wire:target="openCreateModal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span wire:loading.remove wire:target="openCreateModal">Tambah Pengguna</span>
+            </x-ui.button>
         </div>
     </div>
 
@@ -208,10 +209,10 @@
             </div>
             
             <div class="flex justify-end gap-2 pt-4">
-                <flux:button variant="ghost" type="button" wire:click="closeFormModal">Batal</flux:button>
-                <flux:button type="submit" variant="primary">
+                <x-ui.button type="button" variant="secondary" alpineClick="$dispatch('close')">Batal</x-ui.button>
+                <x-ui.button type="submit" variant="primary" wireTarget="save" loadingText="Menyimpan...">
                     {{ $editId ? 'Simpan Perubahan' : 'Tambah Pengguna' }}
-                </flux:button>
+                </x-ui.button>
             </div>
         </form>
     </x-modals.form-modal>
@@ -251,8 +252,8 @@
             />
             
             <div class="flex justify-end gap-2 pt-4">
-                <flux:button variant="ghost" type="button" wire:click="closeResetPasswordModal">Batal</flux:button>
-                <flux:button type="submit" variant="primary">Reset Password</flux:button>
+                <x-ui.button type="button" variant="secondary" alpineClick="$dispatch('close')">Batal</x-ui.button>
+                <x-ui.button type="submit" variant="primary" wireTarget="resetPassword" loadingText="Mereset...">Reset Password</x-ui.button>
             </div>
         </form>
     </x-modals.form-modal>

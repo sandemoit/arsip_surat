@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Arsip;
 
+use App\Exports\ArsipExport;
 use App\Models\Archive;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
@@ -9,6 +10,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Keluar extends Component
 {
@@ -129,6 +131,12 @@ class Keluar extends Component
     {
         $this->showDeleteModal = false;
         $this->deleteId = null;
+    }
+
+    public function export()
+    {
+        $filename = 'arsip-surat-keluar-' . now()->format('Y-m-d-His') . '.xlsx';
+        return Excel::download(new ArsipExport('keluar', $this->filterCategory, $this->search), $filename);
     }
 
     public function render()

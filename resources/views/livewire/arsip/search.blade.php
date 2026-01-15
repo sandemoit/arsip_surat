@@ -12,10 +12,15 @@
                 class="flex-1 px-4 py-3 text-zinc-900 bg-transparent border-none focus:outline-none text-base"
             >
             <button class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg wire:loading.remove wire:target="search, jenisSurat, categoryId, dateFrom, dateTo" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                Cari
+                <svg wire:loading wire:target="search, jenisSurat, categoryId, dateFrom, dateTo" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span wire:loading.remove wire:target="search, jenisSurat, categoryId, dateFrom, dateTo">Cari</span>
+                <span wire:loading wire:target="search, jenisSurat, categoryId, dateFrom, dateTo">Mencari...</span>
             </button>
         </div>
     </div>
@@ -88,7 +93,18 @@
     </div>
 
     {{-- Results --}}
-    <div class="space-y-3">
+    <div class="space-y-3 relative">
+        {{-- Loading Overlay --}}
+        <div wire:loading wire:target="search, jenisSurat, categoryId, dateFrom, dateTo, resetFilters" class="absolute inset-0 bg-white/70 z-10 flex items-center justify-center rounded-xl">
+            <div class="flex flex-col items-center gap-3 p-6">
+                <svg class="w-10 h-10 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-sm font-medium text-zinc-600">Memuat hasil...</span>
+            </div>
+        </div>
+        
         @forelse ($archives as $archive)
             @php
                 $fileType = $archive->file_info['type'] ?? 'application/octet-stream';

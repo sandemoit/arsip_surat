@@ -137,9 +137,10 @@ new class extends Component {
                 <h1 class="text-2xl font-bold text-zinc-900">Kelola Kategori Arsip</h1>
                 <p class="text-md text-zinc-500 mt-1">Manajemen klasifikasi dan kategori arsip digital</p>
             </div>
-            <flux:button icon="plus" class="bg-green-500 text-white hover:bg-green-600" wire:click="openCreateModal">
-                Tambah Kategori
-            </flux:button>
+            <x-ui.button variant="success" wireClick="openCreateModal" wireTarget="openCreateModal" loadingText="Memuat...">
+                <svg class="w-4 h-4 shrink-0" wire:loading.remove wire:target="openCreateModal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span wire:loading.remove wire:target="openCreateModal">Tambah Kategori</span>
+            </x-ui.button>
         </div>
     </div>
 
@@ -211,14 +212,31 @@ new class extends Component {
     {{-- Form Modal --}}
     <x-modals.form-modal wire:model="showFormModal" :title="$editId ? 'Edit Kategori' : 'Tambah Kategori'" maxWidth="md">
         <form wire:submit="save" class="space-y-4">
-            <flux:input label="Kode Kategori" wire:model="code" placeholder="Contoh: 470" required />
-            <flux:input label="Nama Kategori" wire:model="name" placeholder="Contoh: Kependudukan" required />
-            <flux:textarea label="Deskripsi" wire:model="description" placeholder="Deskripsi singkat..." rows="2" />
-            <flux:input label="Masa Simpan (tahun)" wire:model="retention_years" type="number" min="1" max="100" required />
+            <div>
+                <label class="block text-sm font-medium text-zinc-700 mb-1">Kode Kategori <span class="text-red-500">*</span></label>
+                <input type="text" wire:model="code" placeholder="Contoh: 470" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                @error('code') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-zinc-700 mb-1">Nama Kategori <span class="text-red-500">*</span></label>
+                <input type="text" wire:model="name" placeholder="Contoh: Kependudukan" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-zinc-700 mb-1">Deskripsi</label>
+                <textarea wire:model="description" placeholder="Deskripsi singkat..." rows="2" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-zinc-700 mb-1">Masa Simpan (tahun) <span class="text-red-500">*</span></label>
+                <input type="number" wire:model="retention_years" min="1" max="100" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                @error('retention_years') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+            </div>
             
             <div class="flex justify-end gap-2 pt-4">
-                <flux:button variant="ghost" type="button" wire:click="closeFormModal">Batal</flux:button>
-                <flux:button type="submit" variant="primary">{{ $editId ? 'Simpan' : 'Tambah' }}</flux:button>
+                <x-ui.button type="button" variant="secondary" wireClick="closeFormModal">Batal</x-ui.button>
+                <x-ui.button type="submit" variant="primary" wireTarget="save" loadingText="Menyimpan...">
+                    {{ $editId ? 'Simpan' : 'Tambah' }}
+                </x-ui.button>
             </div>
         </form>
     </x-modals.form-modal>

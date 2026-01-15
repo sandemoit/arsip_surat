@@ -133,68 +133,70 @@
                     <div class="space-y-4">
                         {{-- Row 1: Nomor Surat & Tanggal --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <flux:input 
-                                label="Nomor Surat / Dokumen" 
-                                wire:model="nomor_surat"
-                                placeholder="Contoh: 005/123/KC/2025"
-                                required
-                            />
-                            <flux:input 
-                                label="Tanggal Surat" 
-                                type="date"
-                                wire:model="tanggal_surat"
-                                required
-                            />
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Nomor Surat / Dokumen <span class="text-red-500">*</span></label>
+                                <input type="text" wire:model="nomor_surat" placeholder="Contoh: 005/123/KC/2025" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                @error('nomor_surat') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Tanggal Surat <span class="text-red-500">*</span></label>
+                                <input type="date" wire:model="tanggal_surat" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                @error('tanggal_surat') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            </div>
                         </div>
 
                         {{-- Row 2: Perihal --}}
-                        <flux:input 
-                            label="Judul / Perihal Surat" 
-                            wire:model="perihal"
-                            placeholder="Masukkan judul atau perihal surat"
-                            required
-                        />
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Judul / Perihal Surat <span class="text-red-500">*</span></label>
+                            <input type="text" wire:model="perihal" placeholder="Masukkan judul atau perihal surat" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            @error('perihal') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
 
                         {{-- Row 3: Jenis & Kategori --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <flux:select label="Jenis Surat" wire:model="jenis_surat" required>
-                                <flux:select.option value="">-- Pilih Jenis Surat --</flux:select.option>
-                                @foreach($jenisOptions as $value => $label)
-                                    <flux:select.option value="{{ $value }}">{{ $label }}</flux:select.option>
-                                @endforeach
-                            </flux:select>
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Jenis Surat <span class="text-red-500">*</span></label>
+                                <select wire:model="jenis_surat" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">-- Pilih Jenis Surat --</option>
+                                    @foreach($jenisOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('jenis_surat') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            </div>
 
-                            <flux:select label="Kategori" wire:model="category_id" required>
-                                <flux:select.option value="">-- Pilih Kategori --</flux:select.option>
-                                @foreach($this->categories as $category)
-                                    <flux:select.option value="{{ $category->id }}">
-                                        {{ $category->code }} - {{ $category->name }}
-                                    </flux:select.option>
-                                @endforeach
-                            </flux:select>
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Kategori <span class="text-red-500">*</span></label>
+                                <select wire:model="category_id" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">-- Pilih Kategori --</option>
+                                    @foreach($this->categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->code }} - {{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('category_id') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            </div>
                         </div>
 
                         {{-- Row 4: Pengirim & Penerima --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <flux:input 
-                                label="Pengirim / Asal Surat" 
-                                wire:model="pengirim"
-                                placeholder="Nama instansi atau perorangan"
-                            />
-                            <flux:input 
-                                label="Tujuan / Penerima" 
-                                wire:model="penerima"
-                                placeholder="Nama penerima surat"
-                            />
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Pengirim / Asal Surat</label>
+                                <input type="text" wire:model="pengirim" placeholder="Nama instansi atau perorangan" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                @error('pengirim') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Tujuan / Penerima</label>
+                                <input type="text" wire:model="penerima" placeholder="Nama penerima surat" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                @error('penerima') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            </div>
                         </div>
 
                         {{-- Row 5: Keterangan --}}
-                        <flux:textarea 
-                            label="Keterangan Tambahan" 
-                            wire:model="keterangan"
-                            placeholder="Tambahkan catatan atau keterangan jika diperlukan..."
-                            rows="3"
-                        />
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Keterangan Tambahan</label>
+                            <textarea wire:model="keterangan" placeholder="Tambahkan catatan atau keterangan jika diperlukan..." rows="3" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            @error('keterangan') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
                     </div>
                 </div>
 

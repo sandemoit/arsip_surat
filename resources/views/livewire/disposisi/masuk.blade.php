@@ -54,10 +54,22 @@
         {{-- Toolbar --}}
         <div class="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-zinc-200 bg-zinc-50">
             <div class="flex gap-2">
-                <button wire:click="setFilter('all')" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ $filter === 'all' ? 'bg-blue-600 text-white' : 'bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-100' }}">
+                <button 
+                    wire:click="setFilter('all')" 
+                    wire:loading.attr="disabled"
+                    wire:target="setFilter"
+                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 {{ $filter === 'all' ? 'bg-blue-600 text-white' : 'bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-100' }}"
+                >
+                    <svg wire:loading wire:target="setFilter('all')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                     Semua
                 </button>
-                <button wire:click="setFilter('pending')" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ $filter === 'pending' ? 'bg-blue-600 text-white' : 'bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-100' }}">
+                <button 
+                    wire:click="setFilter('pending')" 
+                    wire:loading.attr="disabled"
+                    wire:target="setFilter"
+                    class="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 {{ $filter === 'pending' ? 'bg-blue-600 text-white' : 'bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-100' }}"
+                >
+                    <svg wire:loading wire:target="setFilter('pending')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                     Belum Diproses
                 </button>
             </div>

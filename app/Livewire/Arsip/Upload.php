@@ -5,7 +5,6 @@ namespace App\Livewire\Arsip;
 use App\Models\Archive;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -99,10 +98,11 @@ class Upload extends Component
         $month = date('m');
         $extension = $this->file->getClientOriginalExtension();
         $randomName = Str::random(40).'.'.$extension;
-        $filePath = "archives/{$year}/{$month}/{$randomName}";
+        $directory = "archives/{$year}/{$month}";
+        $filePath = "{$directory}/{$randomName}";
 
-        // Store file
-        $this->file->storeAs("archives/{$year}/{$month}", $randomName);
+        // Store file to public disk (storage/app/public/archives/...)
+        $this->file->storeAs($directory, $randomName, 'public');
 
         // Create archive record
         Archive::create([
