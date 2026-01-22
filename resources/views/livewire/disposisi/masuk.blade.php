@@ -60,7 +60,6 @@
                     wire:target="setFilter"
                     class="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 {{ $filter === 'all' ? 'bg-blue-600 text-white' : 'bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-100' }}"
                 >
-                    <svg wire:loading wire:target="setFilter('all')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                     Semua
                 </button>
                 <button 
@@ -69,7 +68,6 @@
                     wire:target="setFilter"
                     class="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 {{ $filter === 'pending' ? 'bg-blue-600 text-white' : 'bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-100' }}"
                 >
-                    <svg wire:loading wire:target="setFilter('pending')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                     Belum Diproses
                 </button>
             </div>
@@ -84,6 +82,9 @@
         {{-- Dispositions List --}}
         <div class="p-4 space-y-4">
             @forelse ($dispositions as $disposition)
+                @php
+                    $statusBadge = $disposition->statusBadge;
+                @endphp
                 <div class="rounded-xl border p-5 transition-all hover:shadow-md {{ $disposition->isPending() ? 'border-l-4 border-l-blue-500 border-zinc-200 bg-blue-50/30' : 'border-zinc-200 bg-white' }}">
                     <div class="flex items-start justify-between gap-4 mb-3">
                         <div class="flex-1">
@@ -108,8 +109,8 @@
                                 </span>
                             </div>
                         </div>
-                        <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $disposition->isPending() ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }}">
-                            {{ $disposition->isPending() ? 'Pending' : 'Selesai' }}
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $statusBadge['bg'] }} {{ $statusBadge['text'] }}">
+                            {{ $statusBadge['label'] }}
                         </span>
                     </div>
 
@@ -122,9 +123,15 @@
                     {{-- Actions --}}
                     <div class="flex flex-wrap gap-2">
                         @if($disposition->isPending())
-                            <button wire:click="markAsSelesai('{{ $disposition->id }}')" class="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2">
+                            {{-- Tandai Selesai --}}
+                            <button wire:click="openSelesaiModal('{{ $disposition->id }}')" class="px-4 py-2 text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                 Tandai Selesai
+                            </button>
+                            {{-- Teruskan --}}
+                            <button wire:click="openTeruskanModal('{{ $disposition->id }}')" class="px-4 py-2 text-sm font-medium rounded-lg bg-purple-600 text-white hover:bg-purple-700 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                                Teruskan
                             </button>
                         @endif
                         <button wire:click="openViewModal('{{ $disposition->id }}')" class="px-4 py-2 text-sm font-medium rounded-lg bg-zinc-100 text-zinc-700 hover:bg-zinc-200 border border-zinc-300 flex items-center gap-2">
@@ -158,6 +165,15 @@
     <x-modals.form-modal wire:model="showViewModal" title="Detail Disposisi" maxWidth="xl">
         @if($viewDisposition)
             <div class="space-y-4">
+                {{-- Parent Disposition Info (if forwarded) --}}
+                @if($viewDisposition['parent'])
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                        <p class="text-xs font-medium text-amber-700 uppercase mb-1">Diteruskan dari:</p>
+                        <p class="font-medium text-zinc-900">{{ $viewDisposition['parent']['sender_name'] }}</p>
+                        <p class="text-sm text-zinc-600 mt-1">{{ $viewDisposition['parent']['instruction'] }}</p>
+                    </div>
+                @endif
+
                 @if($viewDisposition['archive'])
                     <div class="bg-zinc-50 rounded-xl p-4">
                         <p class="text-xs font-medium text-zinc-500 uppercase mb-2">Dokumen Terkait</p>
@@ -179,7 +195,12 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div><p class="text-sm text-zinc-500">Pengirim</p><p class="font-medium text-zinc-900">{{ $viewDisposition['sender_name'] }}</p></div>
                     <div><p class="text-sm text-zinc-500">Tanggal Dikirim</p><p class="font-medium text-zinc-900">{{ $viewDisposition['created_at'] }}</p></div>
-                    <div><p class="text-sm text-zinc-500">Status</p><p class="font-medium capitalize {{ $viewDisposition['status'] === 'pending' ? 'text-amber-600' : 'text-green-600' }}">{{ $viewDisposition['status'] }}</p></div>
+                    <div>
+                        <p class="text-sm text-zinc-500">Status</p>
+                        <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full {{ $viewDisposition['status_badge']['bg'] }} {{ $viewDisposition['status_badge']['text'] }}">
+                            {{ $viewDisposition['status_badge']['label'] }}
+                        </span>
+                    </div>
                 </div>
 
                 <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4">
@@ -187,8 +208,105 @@
                     <p class="text-zinc-700">{{ $viewDisposition['instruction'] }}</p>
                 </div>
 
+                {{-- Action buttons in view modal for pending --}}
+                @if($viewDisposition['is_pending'])
+                    <div class="flex gap-2 pt-2">
+                        <flux:button wire:click="openSelesaiModal('{{ $viewDisposition['id'] }}')" class="bg-green-600 text-white hover:bg-green-700">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Tandai Selesai
+                        </flux:button>
+                        <flux:button wire:click="openTeruskanModal('{{ $viewDisposition['id'] }}')" class="bg-purple-600 text-white hover:bg-purple-700">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                            Teruskan
+                        </flux:button>
+                    </div>
+                @endif
+
                 <div class="flex justify-end pt-4"><flux:button wire:click="closeViewModal" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button></div>
             </div>
         @endif
+    </x-modals.form-modal>
+
+    {{-- Selesai Modal --}}
+    <x-modals.form-modal wire:model="showSelesaiModal" title="Tandai Disposisi Selesai" maxWidth="md">
+        <form wire:submit="selesaikan">
+            <div class="space-y-4">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <p class="text-green-700 text-sm">Anda akan menandai disposisi ini sebagai selesai. Ini menandakan bahwa tugas telah ditindaklanjuti.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-1">Catatan Penyelesaian (Opsional)</label>
+                    <textarea 
+                        wire:model="selesaiNotes" 
+                        rows="3"
+                        class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900"
+                        placeholder="Tuliskan catatan singkat tentang penyelesaian tugas..."
+                    ></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-zinc-200">
+                    <flux:button type="button" wire:click="closeSelesaiModal" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">
+                        Batal
+                    </flux:button>
+                    <flux:button type="submit" class="bg-green-600 text-white hover:bg-green-700">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Konfirmasi Selesai
+                    </flux:button>
+                </div>
+            </div>
+        </form>
+    </x-modals.form-modal>
+
+    {{-- Teruskan Modal --}}
+    <x-modals.form-modal wire:model="showTeruskanModal" title="Teruskan Disposisi" maxWidth="lg">
+        <form wire:submit="teruskan">
+            <div class="space-y-4">
+                {{-- Info --}}
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <p class="text-xs font-medium text-purple-700 uppercase mb-1">Dokumen:</p>
+                    <p class="font-medium text-zinc-900">{{ $teruskanArchiveName }}</p>
+                </div>
+
+                {{-- Penerima --}}
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-1">Teruskan Kepada <span class="text-red-500">*</span></label>
+                    <select wire:model="teruskanReceiverId" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900">
+                        <option value="">-- Pilih Penerima --</option>
+                        @foreach($this->users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->role }})</option>
+                        @endforeach
+                    </select>
+                    @error('teruskanReceiverId')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Instruksi --}}
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-1">Instruksi Tambahan <span class="text-red-500">*</span></label>
+                    <textarea 
+                        wire:model="teruskanInstruction" 
+                        rows="4"
+                        class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900"
+                        placeholder="Tuliskan instruksi untuk penerima selanjutnya..."
+                    ></textarea>
+                    @error('teruskanInstruction')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Actions --}}
+                <div class="flex justify-end gap-3 pt-4 border-t border-zinc-200">
+                    <flux:button type="button" wire:click="closeTeruskanModal" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">
+                        Batal
+                    </flux:button>
+                    <flux:button type="submit" class="bg-purple-600 text-white hover:bg-purple-700">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        Teruskan Disposisi
+                    </flux:button>
+                </div>
+            </div>
+        </form>
     </x-modals.form-modal>
 </div>

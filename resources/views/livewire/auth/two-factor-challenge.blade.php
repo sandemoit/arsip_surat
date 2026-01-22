@@ -1,4 +1,4 @@
-<x-layouts.auth>
+<x-layouts.auth.card>
     <div class="flex flex-col gap-6">
         <div
             class="relative w-full h-auto"
@@ -25,15 +25,15 @@
         >
             <div x-show="!showRecoveryInput">
                 <x-auth-header
-                    :title="__('Authentication Code')"
-                    :description="__('Enter the authentication code provided by your authenticator application.')"
+                    :title="__('Kode Autentikasi')"
+                    :description="__('Masukkan kode autentikasi yang diberikan oleh aplikasi autentikator Anda.')"
                 />
             </div>
 
             <div x-show="showRecoveryInput">
                 <x-auth-header
-                    :title="__('Recovery Code')"
-                    :description="__('Please confirm access to your account by entering one of your emergency recovery codes.')"
+                    :title="__('Kode Pemulihan')"
+                    :description="__('Silakan konfirmasi akses ke akun Anda dengan memasukkan salah satu kode pemulihan darurat Anda.')"
                 />
             </div>
 
@@ -47,8 +47,7 @@
                                 x-model="code"
                                 length="6"
                                 name="code"
-                                label="OTP Code"
-                                label:sr-only
+                                placeholder="000000"
                                 class="mx-auto"
                              />
                         </div>
@@ -63,6 +62,7 @@
                                 x-bind:required="showRecoveryInput"
                                 autocomplete="one-time-code"
                                 x-model="recovery_code"
+                                placeholder="Masukkan Kode Pemulihan"
                             />
                         </div>
 
@@ -76,20 +76,20 @@
                     <flux:button
                         variant="primary"
                         type="submit"
-                        class="w-full"
+                        class="w-full !bg-blue-500 hover:!bg-blue-600"
                     >
-                        {{ __('Continue') }}
+                        {{ __('Lanjutkan') }}
                     </flux:button>
                 </div>
 
                 <div class="mt-5 space-x-0.5 text-sm leading-5 text-center">
-                    <span class="opacity-50">{{ __('or you can') }}</span>
-                    <div class="inline font-medium underline cursor-pointer opacity-80">
-                        <span x-show="!showRecoveryInput" @click="toggleInput()">{{ __('login using a recovery code') }}</span>
-                        <span x-show="showRecoveryInput" @click="toggleInput()">{{ __('login using an authentication code') }}</span>
+                    <span class="opacity-50">{{ __('atau Anda dapat') }}</span>
+                    <div class="inline font-medium underline cursor-pointer opacity-80 decoration-blue-500 text-blue-600">
+                        <span x-show="!showRecoveryInput" @click="toggleInput()">{{ __('masuk menggunakan kode pemulihan') }}</span>
+                        <span x-show="showRecoveryInput" @click="toggleInput()">{{ __('masuk menggunakan kode autentikasi') }}</span>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-</x-layouts.auth>
+</x-layouts.auth.card>

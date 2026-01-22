@@ -77,7 +77,7 @@
                         <div class="p-0 text-sm font-normal">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                                 <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                                    <span class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black">
+                                    <span class="flex h-full w-full items-center justify-center rounded-lg bg-blue-100 text-blue-500 font-semibold">
                                         {{ auth()->user()->initials() }}
                                     </span>
                                 </span>
@@ -125,7 +125,7 @@
                         <div class="p-0 text-sm font-normal">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                                 <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                                    <span class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black">
+                                    <span class="flex h-full w-full items-center justify-center rounded-lg bg-blue-100 text-blue-500 font-semibold">
                                         {{ auth()->user()->initials() }}
                                     </span>
                                 </span>

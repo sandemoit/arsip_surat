@@ -149,4 +149,37 @@ class Archive extends Model
     {
         return $query->where('jenis_surat', $jenis);
     }
+
+    /**
+     * Cek apakah arsip memiliki disposisi aktif (pending/diteruskan)
+     * 
+     * Arsip dianggap memiliki disposisi aktif jika ada setidaknya satu
+     * disposisi dengan status pending atau diteruskan.
+     */
+    public function hasActiveDisposition(): bool
+    {
+        return $this->dispositions()
+            ->whereIn('status', [Disposition::STATUS_PENDING, Disposition::STATUS_DITERUSKAN])
+            ->exists();
+    }
+
+    /**
+     * Cek apakah arsip bisa didisposisikan
+     * 
+     * Arsip bisa didisposisikan jika:
+     * - Belum pernah ada disposisi sama sekali, ATAU
+     * - Tidak ada disposisi yang masih aktif (semua sudah selesai)
+     */
+    public function canBeDisposed(): bool
+    {
+        return !$this->hasActiveDisposition();
+    }
+
+    /**
+     * Get disposisi terakhir untuk arsip ini
+     */
+    public function latestDisposition()
+    {
+        return $this->dispositions()->latest()->first();
+    }
 }

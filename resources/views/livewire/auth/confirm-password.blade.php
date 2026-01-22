@@ -1,8 +1,8 @@
-<x-layouts.auth>
+<x-layouts.auth.card>
     <div class="flex flex-col gap-6">
         <x-auth-header
-            :title="__('Confirm password')"
-            :description="__('This is a secure area of the application. Please confirm your password before continuing.')"
+            :title="__('Konfirmasi Kata Sandi')"
+            :description="__('Ini adalah area aman. Silakan konfirmasi kata sandi Anda sebelum melanjutkan.')"
         />
 
         <x-auth-session-status class="text-center" :status="session('status')" />
@@ -12,17 +12,17 @@
 
             <flux:input
                 name="password"
-                :label="__('Password')"
+                :label="__('Kata Sandi')"
                 type="password"
                 required
                 autocomplete="current-password"
-                :placeholder="__('Password')"
+                placeholder="Masukkan Kata Sandi"
                 viewable
             />
 
-            <flux:button variant="primary" type="submit" class="w-full" data-test="confirm-password-button">
-                {{ __('Confirm') }}
+            <flux:button variant="primary" type="submit" class="w-full !bg-blue-500 hover:!bg-blue-600" data-test="confirm-password-button">
+                {{ __('Konfirmasi') }}
             </flux:button>
         </form>
     </div>
-</x-layouts.auth>
+</x-layouts.auth.card>

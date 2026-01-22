@@ -5,5 +5,6 @@
 
 <div class="flex w-full flex-col text-center">
     <flux:heading class="text-slate-900 font-bold" size="xl">{{ $title }}</flux:heading>
-    <flux:subheading>{{ $description }}</flux:subheading>
+    {{-- <flux:subheading>{{ $description }}</flux:subheading> --}}
+    <div class="text-sm text-zinc-500">{{ $description }}</div>
 </div>

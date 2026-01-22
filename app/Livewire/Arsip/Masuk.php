@@ -177,6 +177,11 @@ class Masuk extends Component
     {
         $archive = Archive::find($id);
         if ($archive) {
+            // Cek apakah arsip bisa didisposisikan
+            if (!$archive->canBeDisposed()) {
+                session()->flash('error', 'Surat ini sedang dalam proses disposisi dan tidak bisa didisposisikan ulang.');
+                return;
+            }
             $this->disposisiArchiveId = $id;
             $this->disposisiArchiveName = $archive->main_meta['perihal'] ?? 'Arsip';
             $this->disposisiReceiverId = '';
@@ -232,7 +237,7 @@ class Masuk extends Component
 
     public function render()
     {
-        $query = Archive::with(['category', 'uploader'])
+        $query = Archive::with(['category', 'uploader', 'dispositions'])
             ->byJenis('masuk');
 
         if ($this->search) {
