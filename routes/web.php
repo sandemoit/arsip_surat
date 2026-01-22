@@ -14,7 +14,7 @@ use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 })->name('home');
 
 Route::get('dashboard', Dashboard::class)
@@ -59,7 +59,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->group(function () {
         // Livewire Component (kompleks)
         Route::get('pengaturan/pengguna', Pengguna::class)->name('pengguna.index');
-        
+
         // Volt (simple CRUD)
         Volt::route('pengaturan/kategori', 'pengaturan.kategori')->name('kategori.index');
     });
