@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         // Seed Admin User
         User::firstOrCreate(
-            ['email' => 'admin@arsipsurat.test'],
+            ['email' => 'admin@gmail.com'],
             [
                 'name' => 'Administrator',
                 'password' => 'password',
@@ -28,13 +28,25 @@ class DatabaseSeeder extends Seeder
 
         // Seed Staf User (untuk testing)
         User::firstOrCreate(
-            ['email' => 'staf@arsipsurat.test'],
+            ['email' => 'staf1@gmail.com'],
             [
-                'name' => 'Staf Kecamatan',
+                'name' => 'Staf Satu',
                 'password' => 'password',
                 'email_verified_at' => now(),
                 'role' => RoleService::STAF,
                 'nip' => '111111111',
+            ]
+        );
+
+        // Seed Staf User (untuk testing 2)
+        User::firstOrCreate(
+            ['email' => 'staf2@gmail.com'],
+            [
+                'name' => 'Staf Dua',
+                'password' => 'password',
+                'email_verified_at' => now(),
+                'role' => RoleService::STAF,
+                'nip' => '222222222',
             ]
         );
 

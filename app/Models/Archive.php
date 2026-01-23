@@ -166,13 +166,12 @@ class Archive extends Model
     /**
      * Cek apakah arsip bisa didisposisikan
      * 
-     * Arsip bisa didisposisikan jika:
-     * - Belum pernah ada disposisi sama sekali, ATAU
-     * - Tidak ada disposisi yang masih aktif (semua sudah selesai)
+     * Arsip hanya bisa didisposisikan jika belum pernah ada disposisi sama sekali.
+     * Sekali didisposisikan, tidak bisa didisposisikan ulang.
      */
     public function canBeDisposed(): bool
     {
-        return !$this->hasActiveDisposition();
+        return $this->dispositions()->count() === 0;
     }
 
     /**

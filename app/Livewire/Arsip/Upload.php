@@ -38,8 +38,7 @@ class Upload extends Component
     public array $jenisOptions = [
         'masuk' => 'Surat Masuk',
         'keluar' => 'Surat Keluar',
-        'sk' => 'SK / Keputusan',
-        'lainnya' => 'Lainnya',
+        'lainnya' => 'SK / Lainnya',
     ];
 
     protected function rules(): array

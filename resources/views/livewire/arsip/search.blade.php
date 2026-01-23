@@ -128,7 +128,6 @@
                 $jenisLabel = match($archive->jenis_surat) {
                     'masuk' => ['label' => 'Surat Masuk', 'color' => 'blue'],
                     'keluar' => ['label' => 'Surat Keluar', 'color' => 'green'],
-                    'sk' => ['label' => 'SK', 'color' => 'purple'],
                     default => ['label' => 'Lainnya', 'color' => 'zinc'],
                 };
             @endphp

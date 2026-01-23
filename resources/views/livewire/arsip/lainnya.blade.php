@@ -73,9 +73,7 @@
                     default => ['bg' => 'bg-zinc-100', 'text' => 'text-zinc-600'],
                 };
                 $statusBadge = $archive->statusBadge;
-                $jenisBadge = $archive->jenis_surat === 'sk' 
-                    ? ['label' => 'SK', 'bg' => 'bg-indigo-100', 'text' => 'text-indigo-700']
-                    : ['label' => 'Lainnya', 'bg' => 'bg-zinc-100', 'text' => 'text-zinc-700'];
+                $jenisBadge = ['label' => 'Lainnya', 'bg' => 'bg-zinc-100', 'text' => 'text-zinc-700'];
             @endphp
             <x-datatable.row>
                 <x-datatable.cell><span class="font-medium text-blue-600">{{ $archives->firstItem() + $index }}</span></x-datatable.cell>

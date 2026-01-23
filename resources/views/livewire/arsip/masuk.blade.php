@@ -154,14 +154,27 @@
                                 </svg>
                             </button>
                         @else
-                            <span 
-                                class="p-2 rounded-lg bg-zinc-100 text-zinc-400 cursor-not-allowed" 
-                                title="Sedang dalam proses disposisi"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </span>
+                            @if($archive->hasActiveDisposition())
+                                {{-- Status: Pending atau Diteruskan --}}
+                                <span 
+                                    class="p-2 rounded-lg bg-amber-100 text-amber-500 cursor-not-allowed" 
+                                    title="Sedang dalam proses disposisi"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </span>
+                            @else
+                                {{-- Status: Selesai --}}
+                                <span 
+                                    class="p-2 rounded-lg bg-green-100 text-green-500 cursor-not-allowed" 
+                                    title="Sudah pernah didisposisikan"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </span>
+                            @endif
                         @endif
                         
                         {{-- Edit --}}

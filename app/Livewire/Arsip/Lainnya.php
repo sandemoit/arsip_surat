@@ -85,7 +85,7 @@ class Lainnya extends Component
                 'kategori' => $archive->category->name ?? '-',
                 'uploader' => $archive->uploader->name ?? '-',
                 'file_name' => $archive->file_info['original_name'] ?? '-',
-                'file_size' => isset($archive->file_info['size']) ? number_format($archive->file_info['size'] / 1024 / 1024, 2) . ' MB' : '-',
+                'file_size' => isset($archive->file_info['size']) ? number_format($archive->file_info['size'] / 1024 / 1024, 2).' MB' : '-',
                 'file_type' => $archive->file_info['type'] ?? '-',
                 'file_path' => $archive->file_info['path'] ?? null,
                 'created_at' => $archive->created_at?->format('d M Y, H:i') ?? '-',
@@ -135,7 +135,8 @@ class Lainnya extends Component
 
     public function export()
     {
-        $filename = 'arsip-sk-lainnya-' . now()->format('Y-m-d-His') . '.xlsx';
+        $filename = 'arsip-sk-lainnya-'.now()->format('Y-m-d-His').'.xlsx';
+
         return Excel::download(new ArsipExport('lainnya', $this->filterCategory, $this->search), $filename);
     }
 
@@ -143,14 +144,13 @@ class Lainnya extends Component
     {
         $query = Archive::with(['category', 'uploader'])
             ->where(function ($q) {
-                $q->where('jenis_surat', 'sk')
-                    ->orWhere('jenis_surat', 'lainnya');
+                $q->where('jenis_surat', 'lainnya');
             });
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('main_meta.nomor_surat', 'like', '%' . $this->search . '%')
-                    ->orWhere('main_meta.perihal', 'like', '%' . $this->search . '%');
+                $q->where('main_meta.nomor_surat', 'like', '%'.$this->search.'%')
+                    ->orWhere('main_meta.perihal', 'like', '%'.$this->search.'%');
             });
         }
 

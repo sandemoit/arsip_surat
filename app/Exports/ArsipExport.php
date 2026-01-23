@@ -10,10 +10,12 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ArsipExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
+class ArsipExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles
 {
     protected string $jenisSurat;
+
     protected ?string $categoryId;
+
     protected string $search;
 
     public function __construct(string $jenisSurat, ?string $categoryId = null, string $search = '')
@@ -29,7 +31,7 @@ class ArsipExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
 
         // Filter by jenis surat
         if ($this->jenisSurat === 'lainnya') {
-            $query->whereIn('jenis_surat', ['sk', 'lainnya']);
+            $query->whereIn('jenis_surat', 'lainnya');
         } else {
             $query->where('jenis_surat', $this->jenisSurat);
         }
@@ -42,8 +44,8 @@ class ArsipExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
         // Search
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('main_meta.perihal', 'like', '%' . $this->search . '%')
-                    ->orWhere('main_meta.nomor_surat', 'like', '%' . $this->search . '%');
+                $q->where('main_meta.perihal', 'like', '%'.$this->search.'%')
+                    ->orWhere('main_meta.nomor_surat', 'like', '%'.$this->search.'%');
             });
         }
 
