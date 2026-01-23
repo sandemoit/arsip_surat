@@ -74,15 +74,16 @@ class Dashboard extends Component
     {
         $months = [];
 
-        for ($i = 5; $i >= 0; $i--) {
+        // Mulai dari bulan terkini ke bulan terlama (terbaru di kiri)
+        for ($i = 0; $i <= 5; $i++) {
             $date = now()->subMonths($i);
-            
+
             $count = Archive::whereYear('created_at', $date->year)
                 ->whereMonth('created_at', $date->month)
                 ->count();
 
             $months[] = [
-                'name' => $date->format('M'),
+                'name' => $date->translatedFormat('M'),
                 'value' => $count,
                 'label' => 'arsip',
             ];
