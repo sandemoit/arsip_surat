@@ -222,7 +222,10 @@
                     </div>
                 @endif
 
-                <div class="flex justify-end pt-4"><flux:button wire:click="closeViewModal" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button></div>
+                
+                <div class="flex justify-end pt-4">
+                    <flux:button wire:click="$set('showViewModal', false)" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button>
+                </div>
             </div>
         @endif
     </x-modals.form-modal>

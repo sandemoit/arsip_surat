@@ -133,12 +133,17 @@
                         {{-- View --}}
                         <button 
                             wire:click="openViewModal('{{ $archive->id }}')"
-                            class="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-600 transition-colors" 
+                            wire:loading.attr="disabled"
+                            class="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-600 transition-colors disabled:opacity-50" 
                             title="Lihat"
                         >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg wire:loading.remove wire:target="openViewModal('{{ $archive->id }}')" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            <svg wire:loading wire:target="openViewModal('{{ $archive->id }}')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
                         </button>
                         
@@ -146,11 +151,16 @@
                         @if($archive->canBeDisposed())
                             <button 
                                 wire:click="openDisposisiModal('{{ $archive->id }}')"
-                                class="p-2 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-600 transition-colors" 
+                                wire:loading.attr="disabled"
+                                class="p-2 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-600 transition-colors disabled:opacity-50" 
                                 title="Kirim Disposisi"
                             >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg wire:loading.remove wire:target="openDisposisiModal('{{ $archive->id }}')" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                                </svg>
+                                <svg wire:loading wire:target="openDisposisiModal('{{ $archive->id }}')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
                             </button>
                         @else
@@ -178,23 +188,30 @@
                         @endif
                         
                         {{-- Edit --}}
-                        <button 
+                        <a 
+                            href="{{ route('arsip.edit', $archive->id) }}"
                             class="p-2 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-600 transition-colors" 
                             title="Edit"
+                            wire:navigate
                         >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                             </svg>
-                        </button>
+                        </a>
                         
                         {{-- Delete --}}
                         <button 
                             wire:click="confirmDelete('{{ $archive->id }}')"
-                            class="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 transition-colors" 
+                            wire:loading.attr="disabled"
+                            class="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 transition-colors disabled:opacity-50" 
                             title="Hapus"
                         >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg wire:loading.remove wire:target="confirmDelete('{{ $archive->id }}')" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            <svg wire:loading wire:target="confirmDelete('{{ $archive->id }}')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
                         </button>
                     </div>
@@ -267,7 +284,7 @@
                 </div>
 
                 <div class="flex justify-end pt-4">
-                    <flux:button wire:click="closeViewModal" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button>
+                    <flux:button wire:click="$set('showViewModal', false)" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button>
                 </div>
             </div>
         @endif

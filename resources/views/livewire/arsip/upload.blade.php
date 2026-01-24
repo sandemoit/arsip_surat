@@ -1,8 +1,8 @@
 <div>
     {{-- Header --}}
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-zinc-900">Upload Arsip Baru</h1>
-        <p class="text-md text-zinc-500 mt-1">Unggah dokumen arsip ke dalam sistem.</p>
+        <h1 class="text-2xl font-bold text-zinc-900">{{ $editId ? 'Edit Arsip' : 'Upload Arsip Baru' }}</h1>
+        <p class="text-md text-zinc-500 mt-1">{{ $editId ? 'Perbarui informasi dokumen arsip.' : 'Unggah dokumen arsip ke dalam sistem.' }}</p>
     </div>
 
     {{-- Flash Messages --}}
@@ -20,13 +20,33 @@
     {{-- Form Card --}}
     <div class="bg-white rounded-xl border border-zinc-200 shadow-sm">
         <div class="px-6 py-4 border-b border-zinc-200">
-            <h2 class="text-lg font-semibold text-zinc-900">Form Upload Arsip</h2>
+            <h2 class="text-lg font-semibold text-zinc-900">{{ $editId ? 'Form Edit Arsip' : 'Form Upload Arsip' }}</h2>
         </div>
 
         <div class="p-6">
             <form wire:submit="save">
                 {{-- Upload Zone --}}
                 <div class="mb-6">
+                    @if($editId && !$file)
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-blue-900">File Saat Ini Terlampir</p>
+                                    <p class="text-xs text-blue-700">{{ $archive->file_info['original_name'] ?? 'Dokumen' }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <a href="{{ Storage::url($archive->file_info['path'] ?? '') }}" target="_blank" class="text-sm text-blue-700 hover:underline block">Lihat File</a>
+                            </div>
+                        </div>
+                        <p class="text-sm text-zinc-500 mb-2">Ingin mengganti file? Upload file baru di bawah ini:</p>
+                    @endif
+
                     @if (!$file)
                         <div
                             x-data="{ 
@@ -54,14 +74,14 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-lg font-semibold text-zinc-700">Drag & Drop file di sini</p>
+                                    <p class="text-lg font-semibold text-zinc-700">{{ $editId ? 'Ganti File (Opsional)' : 'Drag & Drop file di sini' }}</p>
                                     <p class="text-sm text-zinc-500 mt-1">atau klik untuk memilih file</p>
                                 </div>
                                 <button type="button" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/>
                                     </svg>
-                                    Pilih File
+                                    {{ $editId ? 'Pilih File Baru' : 'Pilih File' }}
                                 </button>
                                 <p class="text-xs text-zinc-400 mt-2">Format yang didukung: PDF, DOC, DOCX, JPG, PNG (Maks. 10MB)</p>
                             </div>

@@ -31,7 +31,7 @@ class ArsipExport implements FromCollection, ShouldAutoSize, WithHeadings, WithM
 
         // Filter by jenis surat
         if ($this->jenisSurat === 'lainnya') {
-            $query->whereIn('jenis_surat', 'lainnya');
+            $query->where('jenis_surat', 'lainnya');
         } else {
             $query->where('jenis_surat', $this->jenisSurat);
         }

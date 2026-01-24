@@ -109,14 +109,49 @@
                 </x-datatable.cell>
                 <x-datatable.cell center>
                     <div class="flex items-center justify-center gap-1">
-                        <button wire:click="openViewModal('{{ $archive->id }}')" class="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-600 transition-colors" title="Lihat">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        {{-- View --}}
+                        <button 
+                            wire:click="openViewModal('{{ $archive->id }}')"
+                            wire:loading.attr="disabled"
+                            class="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-600 transition-colors disabled:opacity-50" 
+                            title="Lihat"
+                        >
+                            <svg wire:loading.remove wire:target="openViewModal('{{ $archive->id }}')" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            <svg wire:loading wire:target="openViewModal('{{ $archive->id }}')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
                         </button>
-                        <button class="p-2 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-600 transition-colors" title="Edit">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                        </button>
-                        <button wire:click="confirmDelete('{{ $archive->id }}')" class="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 transition-colors" title="Hapus">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+
+                        {{-- Edit --}}
+                        <a 
+                            href="{{ route('arsip.edit', $archive->id) }}"
+                            class="p-2 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-600 transition-colors" 
+                            title="Edit"
+                            wire:navigate
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            </svg>
+                        </a>
+
+                        {{-- Delete --}}
+                        <button 
+                            wire:click="confirmDelete('{{ $archive->id }}')"
+                            wire:loading.attr="disabled"
+                            class="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 transition-colors disabled:opacity-50" 
+                            title="Hapus"
+                        >
+                            <svg wire:loading.remove wire:target="confirmDelete('{{ $archive->id }}')" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            <svg wire:loading wire:target="confirmDelete('{{ $archive->id }}')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
                         </button>
                     </div>
                 </x-datatable.cell>
@@ -150,7 +185,10 @@
                     <div class="col-span-2"><p class="text-sm text-zinc-500">Keterangan</p><p class="font-medium text-zinc-900">{{ $viewArchive['keterangan'] }}</p></div>
                     <div class="col-span-2"><p class="text-sm text-zinc-500">Tanggal Upload</p><p class="font-medium text-zinc-900">{{ $viewArchive['created_at'] }}</p></div>
                 </div>
-                <div class="flex justify-end pt-4"><flux:button variant="ghost" wire:click="closeViewModal">Tutup</flux:button></div>
+                
+                <div class="flex justify-end pt-4">
+                    <flux:button wire:click="$set('showViewModal', false)" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button>
+                </div>
             </div>
         @endif
     </x-modals.form-modal>

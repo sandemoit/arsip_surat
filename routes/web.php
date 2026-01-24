@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
     // ARSIP ROUTES (Livewire Component)
     // ==========================================
     Route::get('arsip/upload', ArsipUpload::class)->name('arsip.upload');
+    Route::get('arsip/edit/{id}', ArsipUpload::class)->name('arsip.edit');
     Route::get('arsip/search', ArsipSearch::class)->name('arsip.search');
     Route::get('arsip/masuk', ArsipMasuk::class)->name('arsip.masuk');
     Route::get('arsip/keluar', ArsipKeluar::class)->name('arsip.keluar');

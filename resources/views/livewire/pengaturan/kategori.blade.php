@@ -139,7 +139,7 @@ new class extends Component {
             </div>
             <x-ui.button variant="success" wireClick="openCreateModal" wireTarget="openCreateModal" loadingText="Memuat...">
                 <svg class="w-4 h-4 shrink-0" wire:loading.remove wire:target="openCreateModal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span wire:loading.remove wire:target="openCreateModal">Tambah Kategori</span>
+                Tambah Kategori
             </x-ui.button>
         </div>
     </div>
@@ -200,10 +200,39 @@ new class extends Component {
                 </x-datatable.cell>
                 
                 <x-datatable.cell center>
-                    <x-datatable.actions 
-                        edit="openEditModal('{{ $cat->id }}')" 
-                        delete="confirmDelete('{{ $cat->id }}')" 
-                    />
+                    <div class="flex items-center justify-center gap-1">
+                        {{-- Edit --}}
+                        <button 
+                            wire:click="openEditModal('{{ $cat->id }}')" 
+                            wire:loading.attr="disabled"
+                            class="p-2 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-600 transition-colors disabled:opacity-50" 
+                            title="Edit"
+                        >
+                            <svg wire:loading.remove wire:target="openEditModal('{{ $cat->id }}')" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            </svg>
+                            <svg wire:loading wire:target="openEditModal('{{ $cat->id }}')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+
+                        {{-- Delete --}}
+                        <button 
+                            wire:click="confirmDelete('{{ $cat->id }}')" 
+                            wire:loading.attr="disabled"
+                            class="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 transition-colors disabled:opacity-50" 
+                            title="Hapus"
+                        >
+                            <svg wire:loading.remove wire:target="confirmDelete('{{ $cat->id }}')" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            <svg wire:loading wire:target="confirmDelete('{{ $cat->id }}')" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </x-datatable.cell>
             </x-datatable.row>
         @endforeach
@@ -233,7 +262,7 @@ new class extends Component {
             </div>
             
             <div class="flex justify-end gap-2 pt-4">
-                <x-ui.button type="button" variant="secondary" wireClick="closeFormModal">Batal</x-ui.button>
+                <x-ui.button type="button" variant="secondary" wire:click="$set('showFormModal', false)">Batal</x-ui.button>
                 <x-ui.button type="submit" variant="primary" wireTarget="save" loadingText="Menyimpan...">
                     {{ $editId ? 'Simpan' : 'Tambah' }}
                 </x-ui.button>

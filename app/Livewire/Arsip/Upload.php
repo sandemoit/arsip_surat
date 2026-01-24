@@ -5,6 +5,7 @@ namespace App\Livewire\Arsip;
 use App\Models\Archive;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -13,6 +14,10 @@ use Livewire\WithFileUploads;
 class Upload extends Component
 {
     use WithFileUploads;
+
+    // Edit Mode properties
+    public ?string $editId = null;
+    public ?Archive $archive = null;
 
     // File upload
     public $file;
@@ -41,10 +46,27 @@ class Upload extends Component
         'lainnya' => 'SK / Lainnya',
     ];
 
+    public function mount($id = null)
+    {
+        if ($id) {
+            $this->editId = $id;
+            $this->archive = Archive::findOrFail($id);
+            
+            // Fill form
+            $this->category_id = $this->archive->category_id;
+            $this->jenis_surat = $this->archive->jenis_surat;
+            $this->nomor_surat = $this->archive->main_meta['nomor_surat'] ?? '';
+            $this->tanggal_surat = $this->archive->main_meta['tanggal'] ?? '';
+            $this->perihal = $this->archive->main_meta['perihal'] ?? '';
+            $this->pengirim = $this->archive->main_meta['pengirim'] ?? '';
+            $this->penerima = $this->archive->main_meta['penerima'] ?? '';
+            $this->keterangan = $this->archive->main_meta['keterangan'] ?? '';
+        }
+    }
+
     protected function rules(): array
     {
-        return [
-            'file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
+        $rules = [
             'nomor_surat' => 'required|string|max:100',
             'tanggal_surat' => 'required|date',
             'perihal' => 'required|string|max:255',
@@ -54,6 +76,15 @@ class Upload extends Component
             'penerima' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:1000',
         ];
+
+        // File required only on create
+        if (!$this->editId) {
+            $rules['file'] = 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240';
+        } else {
+            $rules['file'] = 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240';
+        }
+
+        return $rules;
     }
 
     protected function messages(): array
@@ -88,62 +119,107 @@ class Upload extends Component
         $this->resetValidation('file');
     }
 
-    public function save(): void
+    public function save()
     {
         $validated = $this->validate();
 
-        // Generate file path: archives/{year}/{month}/{random_name}.{ext}
-        $year = date('Y');
-        $month = date('m');
-        $extension = $this->file->getClientOriginalExtension();
-        $randomName = Str::random(40).'.'.$extension;
-        $directory = "archives/{$year}/{$month}";
-        $filePath = "{$directory}/{$randomName}";
+        $mainMeta = [
+            'nomor_surat' => $validated['nomor_surat'],
+            'tanggal' => $validated['tanggal_surat'],
+            'perihal' => $validated['perihal'],
+            'pengirim' => $validated['pengirim'] ?? null,
+            'penerima' => $validated['penerima'] ?? null,
+            'keterangan' => $validated['keterangan'] ?? null,
+        ];
 
-        // Store file to public disk (storage/app/public/archives/...)
-        $this->file->storeAs($directory, $randomName, 'public');
+        if ($this->editId) {
+            // Update Existing
+            $updateData = [
+                'category_id' => $validated['category_id'],
+                'jenis_surat' => $validated['jenis_surat'],
+                'main_meta' => $mainMeta,
+            ];
 
-        // Create archive record
-        Archive::create([
-            'category_id' => $validated['category_id'],
-            'uploader_id' => Auth::id(),
-            'jenis_surat' => $validated['jenis_surat'],
-            'main_meta' => [
-                'nomor_surat' => $validated['nomor_surat'],
-                'tanggal' => $validated['tanggal_surat'],
-                'perihal' => $validated['perihal'],
-                'pengirim' => $validated['pengirim'] ?? null,
-                'penerima' => $validated['penerima'] ?? null,
-                'keterangan' => $validated['keterangan'] ?? null,
-            ],
-            'file_info' => [
-                'path' => $filePath,
-                'original_name' => $this->file->getClientOriginalName(),
-                'size' => $this->file->getSize(),
-                'type' => $this->file->getMimeType(),
-            ],
-            'dynamic_meta' => [],
-            'ocr_text' => null,
-        ]);
+            // Update file if new one uploaded
+            if ($this->file) {
+                // Delete old file
+                if (isset($this->archive->file_info['path']) && Storage::disk('public')->exists($this->archive->file_info['path'])) {
+                    Storage::disk('public')->delete($this->archive->file_info['path']);
+                }
 
-        // Reset form
-        $this->reset([
-            'file',
-            'nomor_surat',
-            'tanggal_surat',
-            'perihal',
-            'jenis_surat',
-            'category_id',
-            'pengirim',
-            'penerima',
-            'keterangan',
-        ]);
+                // Upload new file
+                $year = date('Y');
+                $month = date('m');
+                $extension = $this->file->getClientOriginalExtension();
+                $randomName = Str::random(40).'.'.$extension;
+                $directory = "archives/{$year}/{$month}";
+                $filePath = "{$directory}/{$randomName}";
+                
+                $this->file->storeAs($directory, $randomName, 'public');
 
-        session()->flash('message', 'Arsip berhasil diupload!');
+                $updateData['file_info'] = [
+                    'path' => $filePath,
+                    'original_name' => $this->file->getClientOriginalName(),
+                    'size' => $this->file->getSize(),
+                    'type' => $this->file->getMimeType(),
+                ];
+            }
+
+            $this->archive->update($updateData);
+            session()->flash('message', 'Arsip berhasil diperbarui!');
+            
+            // Redirect back based on type
+            return redirect()->route('arsip.' . $this->jenis_surat);
+
+        } else {
+            // Create New
+            $year = date('Y');
+            $month = date('m');
+            $extension = $this->file->getClientOriginalExtension();
+            $randomName = Str::random(40).'.'.$extension;
+            $directory = "archives/{$year}/{$month}";
+            $filePath = "{$directory}/{$randomName}";
+
+            $this->file->storeAs($directory, $randomName, 'public');
+
+            Archive::create([
+                'category_id' => $validated['category_id'],
+                'uploader_id' => Auth::id(),
+                'jenis_surat' => $validated['jenis_surat'],
+                'main_meta' => $mainMeta,
+                'file_info' => [
+                    'path' => $filePath,
+                    'original_name' => $this->file->getClientOriginalName(),
+                    'size' => $this->file->getSize(),
+                    'type' => $this->file->getMimeType(),
+                ],
+                'dynamic_meta' => [],
+                'ocr_text' => null,
+            ]);
+
+            session()->flash('message', 'Arsip berhasil diupload!');
+            
+            // Reset form for create mode
+            $this->reset([
+                'file',
+                'nomor_surat',
+                'tanggal_surat',
+                'perihal',
+                'jenis_surat',
+                'category_id',
+                'pengirim',
+                'penerima',
+                'keterangan',
+            ]);
+        }
     }
 
-    public function cancel(): void
+    public function cancel()
     {
+        if ($this->editId) {
+            return redirect()->route('arsip.' . $this->jenis_surat);
+        }
+
         $this->reset([
             'file',
             'nomor_surat',

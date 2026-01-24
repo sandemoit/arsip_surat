@@ -239,7 +239,7 @@
                     <div class="col-span-2"><p class="text-sm text-zinc-500">Keterangan</p><p class="font-medium text-zinc-900">{{ $viewArchive['keterangan'] }}</p></div>
                     <div class="col-span-2"><p class="text-sm text-zinc-500">Diupload oleh</p><p class="font-medium text-zinc-900">{{ $viewArchive['uploader'] }} • {{ $viewArchive['created_at'] }}</p></div>
                 </div>
-                <div class="flex justify-end pt-4"><flux:button wire:click="closeViewModal" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button></div>
+                <div class="flex justify-end pt-4"><flux:button wire:click="$set('showViewModal', false)" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button></div>
             </div>
         @endif
     </x-modals.form-modal>

@@ -42,7 +42,7 @@ $iconTextClass = [
         
         <div class="flex justify-center gap-2 pt-4">
             @if($cancelAction)
-                <x-ui.button type="button" variant="secondary" wireClick="{{ $cancelAction }}">
+                <x-ui.button type="button" variant="secondary" wireClick="$set('showDeleteModal', false)">
                     {{ $cancelText }}
                 </x-ui.button>
             @else

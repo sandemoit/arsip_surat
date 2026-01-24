@@ -171,9 +171,7 @@
                 </div>
 
                 <div class="flex justify-end pt-4">
-                    <button type="button" wire:click="closeViewModal" class="px-4 py-2 text-sm font-medium text-zinc-700 bg-zinc-100 rounded-lg hover:bg-zinc-200">
-                        Tutup
-                    </button>
+                    <flux:button wire:click="$set('showViewModal', false)" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button>
                 </div>
             </div>
         @endif
