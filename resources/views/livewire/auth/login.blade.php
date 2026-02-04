@@ -9,7 +9,7 @@
             @csrf
 
             <!-- Email Address -->
-            <flux:input name="email" :value="old('email')" type="email" required
+            <flux:input name="email" :value="old('email')" type="text" required
                 autofocus autocomplete="email" placeholder="Masukan Email / NIP" />
 
             <!-- Password -->

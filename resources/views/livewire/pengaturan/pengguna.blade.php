@@ -187,15 +187,15 @@
                     label="NIP" 
                     wire:model="nip" 
                     placeholder="Nomor Induk Pegawai" 
+                    required 
                 />
             </div>
             
             <flux:input 
-                label="Email" 
+                label="Email (opsional)" 
                 type="email" 
                 wire:model="email" 
                 placeholder="contoh@email.com" 
-                required 
             />
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

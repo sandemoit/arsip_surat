@@ -104,8 +104,8 @@ class Pengguna extends Component
     {
         $rules = [
             'name' => 'required|string|max:100',
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->editId, '_id')],
-            'nip' => 'nullable|string|max:30',
+            'email' => ['nullable', 'email', Rule::unique('users', 'email')->ignore($this->editId, '_id')],
+            'nip' => ['required', 'string', 'max:30', Rule::unique('users', 'nip')->ignore($this->editId, '_id')],
             'role' => ['required', Rule::in(RoleService::ROLES)],
             'is_active' => 'boolean',
         ];

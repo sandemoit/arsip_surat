@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -26,9 +28,39 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureAuthentication();
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+    }
+
+    /**
+     * Configure custom authentication logic.
+     * Supports hybrid login with email or NIP.
+     */
+    private function configureAuthentication(): void
+    {
+        Fortify::authenticateUsing(function (Request $request) {
+            $identifier = $request->input('email'); // field name tetap 'email' dari form
+            $password = $request->input('password');
+
+            // Cari user berdasarkan email atau NIP
+            $user = User::where('email', $identifier)
+                ->orWhere('nip', $identifier)
+                ->first();
+
+            // Validasi: user ditemukan, password cocok, dan user aktif
+            if ($user && Hash::check($password, $user->password)) {
+                // Cek apakah user aktif
+                if ($user->is_active === false) {
+                    return null; // User nonaktif tidak bisa login
+                }
+
+                return $user;
+            }
+
+            return null;
+        });
     }
 
     /**
