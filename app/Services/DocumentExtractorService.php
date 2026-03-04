@@ -33,18 +33,8 @@ class DocumentExtractorService
             return ['nomor_surat' => null, 'tanggal_surat' => null, 'perihal' => null];
         }
 
-        // Temporary debug log — hapus setelah selesai tuning
-        \Illuminate\Support\Facades\Log::debug('[DocumentExtractor] Extracted text', [
-            'extension' => $extension,
-            'text_preview' => mb_substr($text, 0, 1000),
-        ]);
-
         // Cek kualitas teks — jika garbled (font encoding rusak), jangan proses
         if (!$this->isTextReadable($text)) {
-            \Illuminate\Support\Facades\Log::debug('[DocumentExtractor] Text appears garbled, skipping extraction', [
-                'first_100' => mb_substr($text, 0, 100),
-            ]);
-
             return ['nomor_surat' => null, 'tanggal_surat' => null, 'perihal' => null];
         }
 
