@@ -20,11 +20,11 @@ return new class extends Migration
     {
         Schema::connection('mongodb')->create('categories', function (Blueprint $collection) {
             // Index unik untuk kode kategori
-            $collection->unique('code');
+            $collection->unique('kode');
 
             // Index untuk pencarian nama
-            $collection->index('name');
-            $collection->index('description');
+            $collection->index('nama');
+            $collection->index('keterangan');
         });
     }
 

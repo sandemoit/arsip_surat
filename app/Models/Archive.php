@@ -11,7 +11,7 @@ use MongoDB\Laravel\Eloquent\Model;
  * Menggunakan fitur schema-less MongoDB untuk metadata dinamis.
  *
  * @property string $_id
- * @property string $category_id Referensi ke categories
+ * @property string $kategori_id Referensi ke categories
  * @property string $uploader_id Referensi ke users (yang upload)
  * @property object $main_meta Metadata wajib (nomor_surat, tanggal, perihal)
  * @property object $dynamic_meta Metadata fleksibel (NIK, Nama, Alamat, dll)
@@ -30,7 +30,7 @@ class Archive extends Model
     /**
      * The collection associated with the model.
      */
-    protected $collection = 'archives';
+    protected $collection = 'arsip';
 
     /**
      * Status arsip
@@ -49,7 +49,7 @@ class Archive extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'category_id',
+        'kategori_id',
         'uploader_id',
         'jenis_surat',
         'status',
@@ -99,7 +99,7 @@ class Archive extends Model
      */
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class, 'kategori_id');
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Livewire\Arsip;
 
 use App\Models\Archive;
 use App\Models\Category;
+use App\Services\DocumentExtractorService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -31,13 +32,16 @@ class Upload extends Component
 
     public string $jenis_surat = '';
 
-    public string $category_id = '';
+    public string $kategori_id = '';
 
     public string $pengirim = '';
 
     public string $penerima = '';
 
     public string $keterangan = '';
+
+    // Extraction status: null, 'success', 'partial', 'failed'
+    public ?string $extractionStatus = null;
 
     // Jenis surat options
     public array $jenisOptions = [
@@ -53,7 +57,7 @@ class Upload extends Component
             $this->archive = Archive::findOrFail($id);
             
             // Fill form
-            $this->category_id = $this->archive->category_id;
+            $this->kategori_id = $this->archive->kategori_id;
             $this->jenis_surat = $this->archive->jenis_surat;
             $this->nomor_surat = $this->archive->main_meta['nomor_surat'] ?? '';
             $this->tanggal_surat = $this->archive->main_meta['tanggal'] ?? '';
@@ -71,17 +75,17 @@ class Upload extends Component
             'tanggal_surat' => 'required|date',
             'perihal' => 'required|string|max:255',
             'jenis_surat' => 'required|in:masuk,keluar,sk,lainnya',
-            'category_id' => 'required|exists:categories,_id',
+            'kategori_id' => 'required|exists:categories,_id',
             'pengirim' => 'nullable|string|max:255',
             'penerima' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:1000',
         ];
 
-        // File required only on create
+        // File required only on create (hanya PDF, DOC, DOCX)
         if (!$this->editId) {
-            $rules['file'] = 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240';
+            $rules['file'] = 'required|file|mimes:pdf,doc,docx|max:10240';
         } else {
-            $rules['file'] = 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240';
+            $rules['file'] = 'nullable|file|mimes:pdf,doc,docx|max:10240';
         }
 
         return $rules;
@@ -91,31 +95,75 @@ class Upload extends Component
     {
         return [
             'file.required' => 'File dokumen wajib diupload.',
-            'file.mimes' => 'Format file harus PDF, DOC, DOCX, JPG, atau PNG.',
+            'file.mimes' => 'Format file harus PDF, DOC, atau DOCX. File selain itu tidak diizinkan.',
             'file.max' => 'Ukuran file maksimal 10MB.',
             'nomor_surat.required' => 'Nomor surat wajib diisi.',
             'tanggal_surat.required' => 'Tanggal surat wajib diisi.',
             'perihal.required' => 'Perihal/judul surat wajib diisi.',
             'jenis_surat.required' => 'Jenis surat wajib dipilih.',
-            'category_id.required' => 'Kategori wajib dipilih.',
-            'category_id.exists' => 'Kategori tidak valid.',
+            'kategori_id.required' => 'Kategori wajib dipilih.',
+            'kategori_id.exists' => 'Kategori tidak valid.',
         ];
     }
 
     #[Computed]
     public function categories()
     {
-        return Category::orderBy('code')->get();
+        return Category::orderBy('kode')->get();
     }
 
     public function updatedFile()
     {
         $this->validateOnly('file');
+
+        if ($this->file) {
+            $this->extractMetadata();
+        }
+    }
+
+    private function extractMetadata(): void
+    {
+        $extension = strtolower($this->file->getClientOriginalExtension());
+
+        if (!in_array($extension, ['pdf', 'doc', 'docx'])) {
+            return;
+        }
+
+        try {
+            $extractor = new DocumentExtractorService();
+            $result = $extractor->extract($this->file->getRealPath(), $extension);
+
+            // Auto-fill hanya jika field masih kosong (tidak overwrite input manual)
+            if (!empty($result['nomor_surat']) && empty($this->nomor_surat)) {
+                $this->nomor_surat = $result['nomor_surat'];
+            }
+            if (!empty($result['tanggal_surat']) && empty($this->tanggal_surat)) {
+                $this->tanggal_surat = $result['tanggal_surat'];
+            }
+            if (!empty($result['perihal']) && empty($this->perihal)) {
+                $this->perihal = $result['perihal'];
+            }
+
+            // Hitung berapa field yang terdeteksi
+            $detected = collect(['nomor_surat', 'tanggal_surat', 'perihal'])
+                ->filter(fn ($key) => !empty($result[$key]))
+                ->count();
+
+            // Set extraction status untuk UI feedback
+            $this->extractionStatus = match (true) {
+                $detected === 3 => 'success',
+                $detected >= 1 => 'partial',
+                default => 'failed',
+            };
+        } catch (\Throwable) {
+            $this->extractionStatus = 'failed';
+        }
     }
 
     public function removeFile(): void
     {
         $this->file = null;
+        $this->extractionStatus = null;
         $this->resetValidation('file');
     }
 
@@ -135,7 +183,7 @@ class Upload extends Component
         if ($this->editId) {
             // Update Existing
             $updateData = [
-                'category_id' => $validated['category_id'],
+                'kategori_id' => $validated['kategori_id'],
                 'jenis_surat' => $validated['jenis_surat'],
                 'main_meta' => $mainMeta,
             ];
@@ -183,7 +231,7 @@ class Upload extends Component
             $this->file->storeAs($directory, $randomName, 'public');
 
             Archive::create([
-                'category_id' => $validated['category_id'],
+                'kategori_id' => $validated['kategori_id'],
                 'uploader_id' => Auth::id(),
                 'jenis_surat' => $validated['jenis_surat'],
                 'main_meta' => $mainMeta,
@@ -206,10 +254,11 @@ class Upload extends Component
                 'tanggal_surat',
                 'perihal',
                 'jenis_surat',
-                'category_id',
+                'kategori_id',
                 'pengirim',
                 'penerima',
                 'keterangan',
+                'extractionStatus',
             ]);
         }
     }
@@ -226,10 +275,11 @@ class Upload extends Component
             'tanggal_surat',
             'perihal',
             'jenis_surat',
-            'category_id',
+            'kategori_id',
             'pengirim',
             'penerima',
             'keterangan',
+            'extractionStatus',
         ]);
         $this->resetValidation();
     }

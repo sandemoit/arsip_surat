@@ -23,7 +23,7 @@ return new class extends Migration
     {
         Schema::connection('mongodb')->create('archives', function (Blueprint $collection) {
             // Indexes untuk relasi
-            $collection->index('category_id');
+            $collection->index('kategori_id');
             $collection->index('uploader_id');
             
             // Indexes untuk metadata utama
@@ -35,7 +35,7 @@ return new class extends Migration
             $collection->index(['created_at' => -1]);
             
             // Compound index untuk filter kategori + tanggal
-            $collection->index(['category_id' => 1, 'created_at' => -1]);
+            $collection->index(['kategori_id' => 1, 'created_at' => -1]);
         });
 
         // Text index untuk full-text search pada OCR dan perihal

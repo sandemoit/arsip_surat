@@ -66,7 +66,7 @@ class Lainnya extends Component
     #[Computed]
     public function categories()
     {
-        return Category::orderBy('code')->get();
+        return Category::orderBy('kode')->get();
     }
 
     public function openViewModal(string $id): void
@@ -155,7 +155,7 @@ class Lainnya extends Component
         }
 
         if ($this->filterCategory) {
-            $query->where('category_id', $this->filterCategory);
+            $query->where('kategori_id', $this->filterCategory);
         }
 
         $query->orderBy($this->sortField, $this->sortDirection);

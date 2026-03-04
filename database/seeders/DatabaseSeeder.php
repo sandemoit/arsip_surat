@@ -52,21 +52,21 @@ class DatabaseSeeder extends Seeder
 
         // Seed Kategori Default
         $categories = [
-            ['code' => '000', 'name' => 'Umum', 'description' => 'Surat undangan, pemberitahuan, pengumuman', 'retention_years' => 5],
-            ['code' => '100', 'name' => 'Kepegawaian', 'description' => 'SK Pegawai, cuti, mutasi, pensiun', 'retention_years' => 10],
-            ['code' => '200', 'name' => 'Keuangan', 'description' => 'Laporan, SPJ, nota dinas keuangan', 'retention_years' => 10],
-            ['code' => '300', 'name' => 'Peralatan', 'description' => 'Inventaris, pengadaan, pemeliharaan', 'retention_years' => 5],
-            ['code' => '400', 'name' => 'Pembangunan', 'description' => 'Proyek, infrastruktur, perencanaan', 'retention_years' => 10],
-            ['code' => '470', 'name' => 'Kependudukan', 'description' => 'Surat keterangan, KTP, KK, dokumen kependudukan', 'retention_years' => 10],
-            ['code' => '500', 'name' => 'Kesejahteraan Rakyat', 'description' => 'Bantuan sosial, kesehatan, pendidikan', 'retention_years' => 5],
-            ['code' => '600', 'name' => 'Pemerintahan', 'description' => 'Kebijakan, peraturan, keputusan', 'retention_years' => 10],
-            ['code' => '700', 'name' => 'Perizinan', 'description' => 'IMB, izin usaha, rekomendasi', 'retention_years' => 5],
-            ['code' => '800', 'name' => 'Keamanan dan Ketertiban', 'description' => 'Laporan keamanan, koordinasi linmas', 'retention_years' => 5],
+            ['kode' => '000', 'nama' => 'Umum', 'keterangan' => 'Surat undangan, pemberitahuan, pengumuman', 'masa_simpan' => 5],
+            ['kode' => '100', 'nama' => 'Kepegawaian', 'keterangan' => 'SK Pegawai, cuti, mutasi, pensiun', 'masa_simpan' => 10],
+            ['kode' => '200', 'nama' => 'Keuangan', 'keterangan' => 'Laporan, SPJ, nota dinas keuangan', 'masa_simpan' => 10],
+            ['kode' => '300', 'nama' => 'Peralatan', 'keterangan' => 'Inventaris, pengadaan, pemeliharaan', 'masa_simpan' => 5],
+            ['kode' => '400', 'nama' => 'Pembangunan', 'keterangan' => 'Proyek, infrastruktur, perencanaan', 'masa_simpan' => 10],
+            ['kode' => '470', 'nama' => 'Kependudukan', 'keterangan' => 'Surat keterangan, KTP, KK, dokumen kependudukan', 'masa_simpan' => 10],
+            ['kode' => '500', 'nama' => 'Kesejahteraan Rakyat', 'keterangan' => 'Bantuan sosial, kesehatan, pendidikan', 'masa_simpan' => 5],
+            ['kode' => '600', 'nama' => 'Pemerintahan', 'keterangan' => 'Kebijakan, peraturan, keputusan', 'masa_simpan' => 10],
+            ['kode' => '700', 'nama' => 'Perizinan', 'keterangan' => 'IMB, izin usaha, rekomendasi', 'masa_simpan' => 5],
+            ['kode' => '800', 'nama' => 'Keamanan dan Ketertiban', 'keterangan' => 'Laporan keamanan, koordinasi linmas', 'masa_simpan' => 5],
         ];
 
         foreach ($categories as $category) {
             Category::firstOrCreate(
-                ['code' => $category['code']],
+                ['kode' => $category['kode']],
                 $category
             );
         }

@@ -46,7 +46,7 @@ class Disposition extends Model
     /**
      * The collection associated with the model.
      */
-    protected $collection = 'dispositions';
+    protected $collection = 'disposisi';
 
     /**
      * The attributes that are mass assignable.

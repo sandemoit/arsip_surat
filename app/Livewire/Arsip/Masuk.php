@@ -80,7 +80,7 @@ class Masuk extends Component
     #[Computed]
     public function categories()
     {
-        return Category::orderBy('code')->get();
+        return Category::orderBy('kode')->get();
     }
 
     #[Computed]
@@ -249,7 +249,7 @@ class Masuk extends Component
         }
 
         if ($this->filterCategory) {
-            $query->where('category_id', $this->filterCategory);
+            $query->where('kategori_id', $this->filterCategory);
         }
 
         $query->orderBy($this->sortField, $this->sortDirection);

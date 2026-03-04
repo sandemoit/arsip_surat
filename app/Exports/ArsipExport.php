@@ -38,7 +38,7 @@ class ArsipExport implements FromCollection, ShouldAutoSize, WithHeadings, WithM
 
         // Filter by category
         if ($this->categoryId) {
-            $query->where('category_id', $this->categoryId);
+            $query->where('kategori_id', $this->categoryId);
         }
 
         // Search
@@ -93,7 +93,7 @@ class ArsipExport implements FromCollection, ShouldAutoSize, WithHeadings, WithM
         }
 
         return array_merge($baseData, [
-            $archive->category->name ?? '-',
+            $archive->category->nama ?? '-',
             $archive->uploader->name ?? '-',
             $archive->created_at?->format('d M Y, H:i'),
         ]);

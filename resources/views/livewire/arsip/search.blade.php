@@ -70,7 +70,7 @@
                     <select wire:model.live="categoryId" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 text-sm">
                         <option value="">Semua Kategori</option>
                         @foreach($this->categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->id }}">{{ $category->nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -155,7 +155,7 @@
                                 @elseif($jenisLabel['color'] == 'green') bg-green-100 text-green-700
                                 @elseif($jenisLabel['color'] == 'purple') bg-purple-100 text-purple-700
                                 @else bg-zinc-100 text-zinc-700 @endif">
-                                {{ $archive->category->name }}
+                                {{ $archive->category->nama }}
                             </span>
                         @endif
                     </div>

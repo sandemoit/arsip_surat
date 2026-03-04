@@ -12,15 +12,15 @@ new class extends Component {
     #[Url]
     public string $search = '';
     public int $perPage = 10;
-    public string $sortField = 'code';
+    public string $sortField = 'kode';
     public string $sortDirection = 'asc';
     
     // Form
     public ?string $editId = null;
-    public string $code = '';
-    public string $name = '';
-    public string $description = '';
-    public int $retention_years = 5;
+    public string $kode = '';
+    public string $nama = '';
+    public string $keterangan = '';
+    public int $masa_simpan = 5;
     
     // Modal
     public bool $showFormModal = false;
@@ -41,8 +41,8 @@ new class extends Component {
 
     public function openCreateModal(): void
     {
-        $this->reset(['editId', 'code', 'name', 'description']);
-        $this->retention_years = 5;
+        $this->reset(['editId', 'kode', 'nama', 'keterangan']);
+        $this->masa_simpan = 5;
         $this->showFormModal = true;
     }
 
@@ -50,20 +50,20 @@ new class extends Component {
     {
         $cat = Category::findOrFail($id);
         $this->editId = $id;
-        $this->code = $cat->code;
-        $this->name = $cat->name;
-        $this->description = $cat->description ?? '';
-        $this->retention_years = $cat->retention_years ?? 5;
+        $this->kode = $cat->kode;
+        $this->nama = $cat->nama;
+        $this->keterangan = $cat->keterangan ?? '';
+        $this->masa_simpan = $cat->masa_simpan ?? 5;
         $this->showFormModal = true;
     }
 
     public function save(): void
     {
         $data = $this->validate([
-            'code' => 'required|string|max:10',
-            'name' => 'required|string|max:100',
-            'description' => 'nullable|string|max:255',
-            'retention_years' => 'required|integer|min:1|max:100',
+            'kode' => 'required|string|max:10',
+            'nama' => 'required|string|max:100',
+            'keterangan' => 'nullable|string|max:255',
+            'masa_simpan' => 'required|integer|min:1|max:100',
         ]);
 
         if ($this->editId) {
@@ -75,21 +75,21 @@ new class extends Component {
         }
         
         $this->showFormModal = false;
-        $this->reset(['editId', 'code', 'name', 'description']);
-        $this->retention_years = 5;
+        $this->reset(['editId', 'kode', 'nama', 'keterangan']);
+        $this->masa_simpan = 5;
     }
 
     public function closeFormModal(): void
     {
         $this->showFormModal = false;
-        $this->reset(['editId', 'code', 'name', 'description']);
+        $this->reset(['editId', 'kode', 'nama', 'keterangan']);
     }
 
     public function confirmDelete(string $id): void
     {
         $cat = Category::find($id);
         $this->deleteId = $id;
-        $this->deleteName = $cat->name ?? '';
+        $this->deleteName = $cat->nama ?? '';
         $this->showDeleteModal = true;
     }
 
@@ -114,9 +114,9 @@ new class extends Component {
         return [
             'categories' => Category::query()
                 ->when($this->search, fn($q) => $q
-                    ->where('code', 'like', "%{$this->search}%")
-                    ->orWhere('name', 'like', "%{$this->search}%")
-                    ->orWhere('description', 'like', "%{$this->search}%")
+                    ->where('kode', 'like', "%{$this->search}%")
+                    ->orWhere('nama', 'like', "%{$this->search}%")
+                    ->orWhere('keterangan', 'like', "%{$this->search}%")
                 )
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage),
@@ -125,7 +125,7 @@ new class extends Component {
 
     public function archiveCount(string $id): int
     {
-        return Archive::where('category_id', $id)->count();
+        return Archive::where('kategori_id', $id)->count();
     }
 }; ?>
 
@@ -161,8 +161,8 @@ new class extends Component {
     >
         <x-slot:columns>
             <x-datatable.th w="60">No</x-datatable.th>
-            <x-datatable.th sortable="code" :$sortField :$sortDirection>Kode - Nama Kategori</x-datatable.th>
-            <x-datatable.th sortable="retention_years" :$sortField :$sortDirection center>Masa Simpan</x-datatable.th>
+            <x-datatable.th sortable="kode" :$sortField :$sortDirection>Kode - Nama Kategori</x-datatable.th>
+            <x-datatable.th sortable="masa_simpan" :$sortField :$sortDirection center>Masa Simpan</x-datatable.th>
             <x-datatable.th center>Jumlah Arsip</x-datatable.th>
             <x-datatable.th center w="120">Aksi</x-datatable.th>
         </x-slot:columns>
@@ -176,18 +176,18 @@ new class extends Component {
                 <x-datatable.cell wrap>
                     <div class="flex items-start gap-3">
                         <span class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-blue-100 text-blue-700 font-bold text-sm flex-shrink-0">
-                            {{ $cat->code }}
+                            {{ $cat->kode }}
                         </span>
                         <div>
-                            <p class="text-sm font-semibold text-zinc-900">{{ $cat->name }}</p>
-                            <p class="text-xs text-zinc-500 mt-0.5">{{ $cat->description ?? '-' }}</p>
+                            <p class="text-sm font-semibold text-zinc-900">{{ $cat->nama }}</p>
+                            <p class="text-xs text-zinc-500 mt-0.5">{{ $cat->keterangan ?? '-' }}</p>
                         </div>
                     </div>
                 </x-datatable.cell>
                 
                 <x-datatable.cell center>
                     @php
-                        $years = $cat->retention_years ?? 0;
+                        $years = $cat->masa_simpan ?? 0;
                         $color = match(true) { $years >= 25 => 'purple', $years >= 10 => 'green', $years >= 5 => 'blue', default => 'zinc' };
                     @endphp
                     <x-datatable.badge :color="$color" icon="calendar">
@@ -243,22 +243,22 @@ new class extends Component {
         <form wire:submit="save" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-zinc-700 mb-1">Kode Kategori <span class="text-red-500">*</span></label>
-                <input type="text" wire:model="code" placeholder="Contoh: 470" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                @error('code') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                <input type="text" wire:model="kode" placeholder="Contoh: 470" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                @error('kode') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label class="block text-sm font-medium text-zinc-700 mb-1">Nama Kategori <span class="text-red-500">*</span></label>
-                <input type="text" wire:model="name" placeholder="Contoh: Kependudukan" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                <input type="text" wire:model="nama" placeholder="Contoh: Kependudukan" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                @error('nama') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label class="block text-sm font-medium text-zinc-700 mb-1">Deskripsi</label>
-                <textarea wire:model="description" placeholder="Deskripsi singkat..." rows="2" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                <textarea wire:model="keterangan" placeholder="Deskripsi singkat..." rows="2" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
             </div>
             <div>
                 <label class="block text-sm font-medium text-zinc-700 mb-1">Masa Simpan (tahun) <span class="text-red-500">*</span></label>
-                <input type="number" wire:model="retention_years" min="1" max="100" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                @error('retention_years') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                <input type="number" wire:model="masa_simpan" min="1" max="100" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                @error('masa_simpan') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
             </div>
             
             <div class="flex justify-end gap-2 pt-4">

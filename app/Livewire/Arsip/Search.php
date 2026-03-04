@@ -73,7 +73,7 @@ class Search extends Component
     #[Computed]
     public function categories()
     {
-        return Category::orderBy('code')->get();
+        return Category::orderBy('kode')->get();
     }
 
     public function openViewModal(string $id): void
@@ -129,7 +129,7 @@ class Search extends Component
 
         // Filter by category
         if ($this->categoryId) {
-            $query->where('category_id', $this->categoryId);
+            $query->where('kategori_id', $this->categoryId);
         }
 
         // Filter by date range

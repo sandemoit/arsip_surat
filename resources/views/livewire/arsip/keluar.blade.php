@@ -46,7 +46,7 @@
                 <select wire:model.live="filterCategory" class="text-sm border border-zinc-300 rounded-lg px-3 py-1.5 bg-white text-zinc-900">
                     <option value="">Semua</option>
                     @foreach($this->categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        <option value="{{ $category->id }}">{{ $category->nama }}</option>
                     @endforeach
                 </select>
             </div>
@@ -94,7 +94,7 @@
                 <x-datatable.cell>{{ $archive->main_meta['penerima'] ?? '-' }}</x-datatable.cell>
                 <x-datatable.cell center>
                     @if($archive->category)
-                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full {{ $archive->category->badge_classes }}">{{ $archive->category->name }}</span>
+                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full {{ $archive->category->badge_classes }}">{{ $archive->category->nama }}</span>
                     @else <span class="text-zinc-400">-</span> @endif
                 </x-datatable.cell>
                 <x-datatable.cell center>

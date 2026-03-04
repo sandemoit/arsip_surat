@@ -164,7 +164,7 @@
                                     'Penduduk' => 'bg-amber-100 text-amber-700',
                                     'Keuangan' => 'bg-green-100 text-green-700',
                                 ];
-                                $badgeColor = $categoryColors[$archive->category->name ?? ''] ?? 'bg-zinc-100 text-zinc-700';
+                                $badgeColor = $categoryColors[$archive->category->nama ?? ''] ?? 'bg-zinc-100 text-zinc-700';
                             @endphp
                             <tr class="hover:bg-zinc-50">
                                 <td class="px-4 py-3">
@@ -174,7 +174,7 @@
                                 <td class="px-4 py-3">
                                     @if($archive->category)
                                         <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full {{ $badgeColor }}">
-                                            {{ $archive->category->name }}
+                                            {{ $archive->category->nama }}
                                         </span>
                                     @else
                                         <span class="text-zinc-400">-</span>

@@ -9,10 +9,11 @@ use MongoDB\Laravel\Eloquent\Model;
  * Model Category - Klasifikasi Arsip
  * 
  * @property string $_id
- * @property string $code Kode klasifikasi (misal: "470")
- * @property string $name Nama klasifikasi (misal: "Kependudukan")
- * @property int $retention_years Masa simpan arsip dalam tahun
- * @property string $color Warna badge (blue, green, red, amber, purple, pink, indigo, cyan)
+ * @property string $kode Kode klasifikasi (misal: "470")
+ * @property string $nama Nama klasifikasi (misal: "Kependudukan")
+ * @property string $keterangan Deskripsi singkat kategori
+ * @property int $masa_simpan Masa simpan arsip dalam tahun
+ * @property string $warna Warna badge (blue, green, red, amber, purple, pink, indigo, cyan)
  */
 class Category extends Model
 {
@@ -26,7 +27,7 @@ class Category extends Model
     /**
      * The collection associated with the model.
      */
-    protected $collection = 'categories';
+    protected $collection = 'kategori';
 
     /**
      * Available badge colors
@@ -46,11 +47,11 @@ class Category extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'code',
-        'name',
-        'description',
-        'retention_years',
-        'color',
+        'kode',
+        'nama',
+        'keterangan',
+        'masa_simpan',
+        'warna',
     ];
 
     /**
@@ -59,7 +60,7 @@ class Category extends Model
     protected function casts(): array
     {
         return [
-            'retention_years' => 'integer',
+            'masa_simpan' => 'integer',
         ];
     }
 
@@ -68,8 +69,8 @@ class Category extends Model
      */
     public function getBadgeClassesAttribute(): string
     {
-        $color = $this->color ?? 'blue';
-        $styles = self::COLORS[$color] ?? self::COLORS['blue'];
+        $warna = $this->warna ?? 'blue';
+        $styles = self::COLORS[$warna] ?? self::COLORS['blue'];
         return $styles['bg'] . ' ' . $styles['text'];
     }
 
@@ -78,6 +79,6 @@ class Category extends Model
      */
     public function archives()
     {
-        return $this->hasMany(Archive::class, 'category_id');
+        return $this->hasMany(Archive::class, 'kategori_id');
     }
 }
