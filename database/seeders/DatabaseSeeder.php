@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
                 'role' => RoleService::ADMIN,
                 'nip' => '000000000',
+                'is_active' => true
             ]
         );
 
@@ -35,6 +36,7 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
                 'role' => RoleService::STAF,
                 'nip' => '111111111',
+                'is_active' => true
             ]
         );
 
@@ -47,6 +49,7 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
                 'role' => RoleService::STAF,
                 'nip' => '222222222',
+                'is_active' => true
             ]
         );
 
