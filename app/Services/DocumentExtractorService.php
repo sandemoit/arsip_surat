@@ -126,7 +126,8 @@ class DocumentExtractorService
 
     private function extractTextFromDoc(string $filePath): string
     {
-        // Primary: gunakan antiword CLI — lebih reliable untuk .doc legacy
+        // Gunakan antiword CLI — satu-satunya cara reliable baca .doc legacy
+        // PHPWord MsDoc reader sengaja tidak dipakai (hang di Linux, crash di Windows)
         try {
             $output = [];
             $exitCode = 0;
@@ -139,14 +140,7 @@ class DocumentExtractorService
             // antiword tidak tersedia
         }
 
-        // Fallback: PHPWord MsDoc reader
-        try {
-            $phpWord = WordIOFactory::load($filePath, 'MsDoc');
-
-            return $this->getTextFromPhpWord($phpWord);
-        } catch (\Throwable) {
-            return '';
-        }
+        return '';
     }
 
     private function getTextFromPhpWord(\PhpOffice\PhpWord\PhpWord $phpWord): string
