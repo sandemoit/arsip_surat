@@ -126,6 +126,20 @@ class DocumentExtractorService
 
     private function extractTextFromDoc(string $filePath): string
     {
+        // Primary: gunakan antiword CLI — lebih reliable untuk .doc legacy
+        try {
+            $output = [];
+            $exitCode = 0;
+            exec('antiword ' . escapeshellarg($filePath) . ' 2>/dev/null', $output, $exitCode);
+
+            if ($exitCode === 0 && !empty($output)) {
+                return implode("\n", $output);
+            }
+        } catch (\Throwable) {
+            // antiword tidak tersedia
+        }
+
+        // Fallback: PHPWord MsDoc reader
         try {
             $phpWord = WordIOFactory::load($filePath, 'MsDoc');
 
@@ -312,6 +326,17 @@ class DocumentExtractorService
 
             if (checkdate((int) $month, (int) $day, (int) $year)) {
                 return "{$year}-{$month}-{$day}";
+            }
+        }
+
+        // Strategy 5: Format "Bulan YYYY" tanpa hari (contoh: "Menanti, September 2025")
+        // Default ke tanggal 1
+        if (preg_match('/(' . $bulanNames . ')\s+(\d{4})/iu', $normalized, $match)) {
+            $month = self::BULAN_MAP[strtolower($match[1])] ?? null;
+            $year = $match[2];
+
+            if ($month && checkdate((int) $month, 1, (int) $year)) {
+                return "{$year}-{$month}-01";
             }
         }
 
