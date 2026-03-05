@@ -98,6 +98,11 @@ class DocumentExtractorService
 
     private function extractPdfWithPdftotext(string $filePath): string
     {
+        // pdftotext hanya tersedia di Linux/Mac
+        if (PHP_OS_FAMILY === 'Windows') {
+            return '';
+        }
+
         try {
             $output = [];
             $exitCode = 0;
@@ -126,8 +131,11 @@ class DocumentExtractorService
 
     private function extractTextFromDoc(string $filePath): string
     {
-        // Gunakan antiword CLI — satu-satunya cara reliable baca .doc legacy
-        // PHPWord MsDoc reader sengaja tidak dipakai (hang di Linux, crash di Windows)
+        // antiword hanya tersedia di Linux/Mac — skip di Windows
+        if (PHP_OS_FAMILY === 'Windows') {
+            return '';
+        }
+
         try {
             $output = [];
             $exitCode = 0;
