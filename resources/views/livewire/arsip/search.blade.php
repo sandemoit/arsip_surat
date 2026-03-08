@@ -175,8 +175,11 @@
                             {{ $archive->main_meta['pengirim'] ?? $archive->main_meta['penerima'] ?? '-' }}
                         </span>
                     </div>
-                    @if(isset($archive->main_meta['keterangan']) && $archive->main_meta['keterangan'])
-                        <p class="text-sm text-zinc-500 line-clamp-2">{{ $archive->main_meta['keterangan'] }}</p>
+                    @php
+                        $ringkasan = $archive->main_meta['ringkasan'] ?? $archive->main_meta['keterangan'] ?? null;
+                    @endphp
+                    @if($ringkasan)
+                        <p class="text-sm text-zinc-500 line-clamp-2">{{ $ringkasan }}</p>
                     @endif
                 </div>
                 
@@ -236,7 +239,7 @@
                     <div><p class="text-sm text-zinc-500">Penerima</p><p class="font-medium text-zinc-900">{{ $viewArchive['penerima'] }}</p></div>
                     <div><p class="text-sm text-zinc-500">Kategori</p><p class="font-medium text-zinc-900">{{ $viewArchive['kategori'] }}</p></div>
                     <div><p class="text-sm text-zinc-500">Jenis Surat</p><p class="font-medium text-zinc-900 capitalize">{{ $viewArchive['jenis_surat'] }}</p></div>
-                    <div class="col-span-2"><p class="text-sm text-zinc-500">Keterangan</p><p class="font-medium text-zinc-900">{{ $viewArchive['keterangan'] }}</p></div>
+                    <div class="col-span-2"><p class="text-sm text-zinc-500">Isi Ringkasan</p><p class="font-medium text-zinc-900">{{ $viewArchive['ringkasan'] }}</p></div>
                     <div class="col-span-2"><p class="text-sm text-zinc-500">Diupload oleh</p><p class="font-medium text-zinc-900">{{ $viewArchive['uploader'] }} • {{ $viewArchive['created_at'] }}</p></div>
                 </div>
                 <div class="flex justify-end pt-4"><flux:button wire:click="$set('showViewModal', false)" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200">Tutup</flux:button></div>

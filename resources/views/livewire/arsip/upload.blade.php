@@ -239,32 +239,40 @@
                             </div>
                         </div>
 
-                        {{-- Row 5: Keterangan --}}
+                        {{-- Row 5: Isi Ringkasan --}}
                         <div>
-                            <label class="block text-sm font-medium text-zinc-700 mb-1">Keterangan Tambahan</label>
-                            <textarea wire:model="keterangan" placeholder="Tambahkan catatan atau keterangan jika diperlukan..." rows="3" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
-                            @error('keterangan') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Isi Ringkasan</label>
+                            <textarea wire:model="ringkasan" placeholder="Ringkas isi dokumen atau catatan penting..." rows="3" class="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            @error('ringkasan') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
 
                 {{-- Form Actions --}}
-                <div class="flex justify-end gap-3 pt-6 mt-6 border-t border-zinc-200">
-                    <flux:button type="button" wire:click="cancel" class="bg-zinc-100 text-zinc-700 hover:bg-zinc-200 border border-zinc-300">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                        Batal
-                    </flux:button>
-                    <flux:button type="submit" wire:loading.attr="disabled" class="bg-blue-600 text-white hover:bg-blue-700">
-                        <svg class="w-4 h-4 mr-1" wire:loading.remove wire:target="save" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                        </svg>
-                        <svg class="w-4 h-4 mr-1 animate-spin" wire:loading wire:target="save" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Upload Arsip
+                <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-6 mt-6 border-t border-zinc-200">
+                    @if ($editId)
+                        <flux:button
+                            type="button"
+                            wire:click="cancel"
+                            wire:loading.attr="disabled"
+                            wire:target="save"
+                            variant="outline"
+                            color="zinc"
+                            icon="x-mark"
+                        >
+                            Batal
+                        </flux:button>
+                    @endif
+                    <flux:button
+                        type="submit"
+                        wire:loading.attr="disabled"
+                        wire:target="save"
+                        variant="primary"
+                        color="green"
+                        icon="arrow-up-on-square"
+                    >
+                        <span wire:loading.remove wire:target="save">{{ $editId ? 'Simpan Perubahan' : 'Upload Arsip' }}</span>
+                        <span wire:loading wire:target="save">{{ $editId ? 'Menyimpan...' : 'Mengupload...' }}</span>
                     </flux:button>
                 </div>
             </form>

@@ -80,6 +80,19 @@ class Disposition extends Model
     ];
 
     /**
+     * Batasi alur disposisi: tidak boleh membuat child disposition baru.
+     * Disposisi hanya boleh sekali kirim dari menu arsip.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (self $disposition) {
+            if (!empty($disposition->parent_id)) {
+                throw new \InvalidArgumentException('Disposisi tidak dapat diteruskan lagi.');
+            }
+        });
+    }
+
+    /**
      * Get status badge info
      */
     public function getStatusBadgeAttribute(): array

@@ -177,7 +177,7 @@
                     <div><p class="text-sm text-zinc-500">Penerima</p><p class="font-medium text-zinc-900">{{ $viewArchive['penerima'] }}</p></div>
                     <div><p class="text-sm text-zinc-500">Kategori</p><p class="font-medium text-zinc-900">{{ $viewArchive['kategori'] }}</p></div>
                     <div><p class="text-sm text-zinc-500">Diupload oleh</p><p class="font-medium text-zinc-900">{{ $viewArchive['uploader'] }}</p></div>
-                    <div class="col-span-2"><p class="text-sm text-zinc-500">Keterangan</p><p class="font-medium text-zinc-900">{{ $viewArchive['keterangan'] }}</p></div>
+                    <div class="col-span-2"><p class="text-sm text-zinc-500">Isi Ringkasan</p><p class="font-medium text-zinc-900">{{ $viewArchive['ringkasan'] }}</p></div>
                     <div class="col-span-2"><p class="text-sm text-zinc-500">Tanggal Upload</p><p class="font-medium text-zinc-900">{{ $viewArchive['created_at'] }}</p></div>
                 </div>
                 

@@ -38,7 +38,7 @@ class Upload extends Component
 
     public string $penerima = '';
 
-    public string $keterangan = '';
+    public string $ringkasan = '';
 
     // Extraction status: null, 'success', 'partial', 'failed'
     public ?string $extractionStatus = null;
@@ -64,7 +64,9 @@ class Upload extends Component
             $this->perihal = $this->archive->main_meta['perihal'] ?? '';
             $this->pengirim = $this->archive->main_meta['pengirim'] ?? '';
             $this->penerima = $this->archive->main_meta['penerima'] ?? '';
-            $this->keterangan = $this->archive->main_meta['keterangan'] ?? '';
+            $this->ringkasan = $this->archive->main_meta['ringkasan']
+                ?? $this->archive->main_meta['keterangan']
+                ?? '';
         }
     }
 
@@ -78,7 +80,7 @@ class Upload extends Component
             'kategori_id' => 'required|exists:categories,_id',
             'pengirim' => 'nullable|string|max:255',
             'penerima' => 'nullable|string|max:255',
-            'keterangan' => 'nullable|string|max:1000',
+            'ringkasan' => 'nullable|string|max:1000',
         ];
 
         // File required only on create (hanya PDF, DOC, DOCX)
@@ -177,7 +179,7 @@ class Upload extends Component
             'perihal' => $validated['perihal'],
             'pengirim' => $validated['pengirim'] ?? null,
             'penerima' => $validated['penerima'] ?? null,
-            'keterangan' => $validated['keterangan'] ?? null,
+            'ringkasan' => $validated['ringkasan'] ?? null,
         ];
 
         if ($this->editId) {
@@ -246,20 +248,8 @@ class Upload extends Component
             ]);
 
             session()->flash('message', 'Arsip berhasil diupload!');
-            
-            // Reset form for create mode
-            $this->reset([
-                'file',
-                'nomor_surat',
-                'tanggal_surat',
-                'perihal',
-                'jenis_surat',
-                'kategori_id',
-                'pengirim',
-                'penerima',
-                'keterangan',
-                'extractionStatus',
-            ]);
+
+            return redirect()->route('arsip.masuk');
         }
     }
 
@@ -278,7 +268,7 @@ class Upload extends Component
             'kategori_id',
             'pengirim',
             'penerima',
-            'keterangan',
+                'ringkasan',
             'extractionStatus',
         ]);
         $this->resetValidation();

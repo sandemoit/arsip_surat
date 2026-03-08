@@ -87,7 +87,9 @@ class Search extends Component
                 'perihal' => $archive->main_meta['perihal'] ?? '-',
                 'pengirim' => $archive->main_meta['pengirim'] ?? '-',
                 'penerima' => $archive->main_meta['penerima'] ?? '-',
-                'keterangan' => $archive->main_meta['keterangan'] ?? '-',
+                'ringkasan' => $archive->main_meta['ringkasan']
+                    ?? $archive->main_meta['keterangan']
+                    ?? '-',
                 'kategori' => $archive->category->name ?? '-',
                 'uploader' => $archive->uploader->name ?? '-',
                 'jenis_surat' => $archive->jenis_surat ?? '-',
@@ -112,14 +114,95 @@ class Search extends Component
         $query = Archive::with(['category', 'uploader']);
 
         // Search keyword
-        if ($this->search) {
-            $query->where(function ($q) {
-                $q->where('main_meta.nomor_surat', 'like', '%' . $this->search . '%')
-                    ->orWhere('main_meta.perihal', 'like', '%' . $this->search . '%')
-                    ->orWhere('main_meta.pengirim', 'like', '%' . $this->search . '%')
-                    ->orWhere('main_meta.penerima', 'like', '%' . $this->search . '%')
-                    ->orWhere('ocr_text', 'like', '%' . $this->search . '%');
-            });
+        if (trim($this->search) !== '') {
+            $keyword = preg_quote(trim($this->search), '/');
+
+            $query->whereRaw([
+                '$or' => [
+                    ['main_meta.nomor_surat' => ['$regex' => $keyword, '$options' => 'i']],
+                    ['main_meta.perihal' => ['$regex' => $keyword, '$options' => 'i']],
+                    ['main_meta.ringkasan' => ['$regex' => $keyword, '$options' => 'i']],
+                    ['main_meta.keterangan' => ['$regex' => $keyword, '$options' => 'i']], // fallback data lama
+                    ['main_meta.pengirim' => ['$regex' => $keyword, '$options' => 'i']],
+                    ['main_meta.penerima' => ['$regex' => $keyword, '$options' => 'i']],
+                    ['ocr_text' => ['$regex' => $keyword, '$options' => 'i']],
+                    ['file_info.original_name' => ['$regex' => $keyword, '$options' => 'i']],
+                    [
+                        '$expr' => [
+                            '$anyElementTrue' => [
+                                '$map' => [
+                                    'input' => [
+                                        '$objectToArray' => [
+                                            '$cond' => [
+                                                [
+                                                    '$eq' => [
+                                                        ['$type' => '$main_meta'],
+                                                        'object',
+                                                    ],
+                                                ],
+                                                '$main_meta',
+                                                (object) [],
+                                            ],
+                                        ],
+                                    ],
+                                    'as' => 'item',
+                                    'in' => [
+                                        '$regexMatch' => [
+                                            'input' => [
+                                                '$convert' => [
+                                                    'input' => '$$item.v',
+                                                    'to' => 'string',
+                                                    'onError' => '',
+                                                    'onNull' => '',
+                                                ],
+                                            ],
+                                            'regex' => $keyword,
+                                            'options' => 'i',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    [
+                        '$expr' => [
+                            '$anyElementTrue' => [
+                                '$map' => [
+                                    'input' => [
+                                        '$objectToArray' => [
+                                            '$cond' => [
+                                                [
+                                                    '$eq' => [
+                                                        ['$type' => '$dynamic_meta'],
+                                                        'object',
+                                                    ],
+                                                ],
+                                                '$dynamic_meta',
+                                                (object) [],
+                                            ],
+                                        ],
+                                    ],
+                                    'as' => 'item',
+                                    'in' => [
+                                        '$regexMatch' => [
+                                            'input' => [
+                                                '$convert' => [
+                                                    'input' => '$$item.v',
+                                                    'to' => 'string',
+                                                    'onError' => '',
+                                                    'onNull' => '',
+                                                ],
+                                            ],
+                                            'regex' => $keyword,
+                                            'options' => 'i',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
         }
 
         // Filter by jenis surat

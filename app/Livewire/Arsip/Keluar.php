@@ -81,7 +81,9 @@ class Keluar extends Component
                 'perihal' => $archive->main_meta['perihal'] ?? '-',
                 'pengirim' => $archive->main_meta['pengirim'] ?? '-',
                 'penerima' => $archive->main_meta['penerima'] ?? '-',
-                'keterangan' => $archive->main_meta['keterangan'] ?? '-',
+                'ringkasan' => $archive->main_meta['ringkasan']
+                    ?? $archive->main_meta['keterangan']
+                    ?? '-',
                 'kategori' => $archive->category->name ?? '-',
                 'uploader' => $archive->uploader->name ?? '-',
                 'file_name' => $archive->file_info['original_name'] ?? '-',
@@ -148,6 +150,7 @@ class Keluar extends Component
             $query->where(function ($q) {
                 $q->where('main_meta.nomor_surat', 'like', '%' . $this->search . '%')
                     ->orWhere('main_meta.perihal', 'like', '%' . $this->search . '%')
+                    ->orWhere('main_meta.ringkasan', 'like', '%' . $this->search . '%')
                     ->orWhere('main_meta.penerima', 'like', '%' . $this->search . '%');
             });
         }
